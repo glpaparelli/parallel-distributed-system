@@ -1,0 +1,45 @@
+## Gruppo SPM (2023)
+- Amdahal Law: what is it and how can you derivate the fomula;
+- Gustafson Law: what is it but NO formula;
+- Actor Model: what is it and how would you use the Actor Model for implementing the counting part of the Huffman project;
+- Apache Spark what is it, what frameworks there are and can you talk about GraphX;
+- Questions about the rewriting rules concerning the map fusion and what other metrics can be adopted;
+- Stream and data parallel characteristics;
+- Collective communication in MPI and HDFS;
+- What kind of refactoring rule I could have done on the project (huffman): I answered with mapfusion and I argued;
+- how I would implement the decoding of the file: I replied that I could make a pipeline, in which the first stage, automaton type that recognizes the prefixes, the second stage decode, the third write in append, etc.
+- asked in MPI how I could distribute: I did an analysis related to the file size, the structures in play and their size, the possibilities using mpi_reduce, map_reduce, broadcast etc...
+- Advantages of using map fusion (mostly in a distributed system);
+- In which occasions map fusion could be a bad choice;
+- scatter and gather in MPI;
+- What Is the role of the communicator in MPI;
+- Why rank in MPI are integer values
+- Spark Shared Variables
+- Map Fusion's relation with Spark's transformations
+- Job Stealing
+- Formulate a dynamic scheduling tecnique which finds compromises between Job Stealing and Auto Scheduling;
+- How to use MPI to implement the PageRank?
+- What's Macro Data Flow?
+- What's vectorization and what are the 4 conditions for loops?
+
+## GitHub (2017-2021)
+- Map fusion, difference between equivalence rules `comp(map(f), map(g)) == map(comp(f, g))` and `pipe(map(f), map(g)) == map(comp(f, g))`. How many resources are needed for each of those cases?
+- What's vectorization and how is it implemented?
+- Under what conditions can I implement vectorization? If I have a library call inside the for body and force vectorization (e.g. with a `pragma`) what happens? What if I have dependent iterations and force vectorization?
+- Autonomic farm management. How can I implement autonomic management in FastFlow? Can I implement `farmout(pipe(s1, s2, s3))` at runtime in FastFlow? (No) Would it change anything if the library was not header-based but was in a `.so` file? (No because it depends on the FastFlow API).
+- Macro Data Flow with examples;
+- Building blocks for streaming and data;
+- Point to point and collective communication in fast flow. When to use collective communication;
+- Service time, latency, efficiency and example where to use what metrics;
+- Why didn't you use a manager and have the emitter do everything? Do you have more data movements with the manager? Does the emitter have any earnings if there is a manager?
+- Why do you start immediately with a fixed number of workers? Wouldn't it have been better to have him work one and then figure out how many workers they need dynamically?
+- It would have been right to do an analysis of the time it takes to make a switch of the number of workers in order to understand how often to change
+- If I have two maps, which optimizations can I do? If I do map fusion then do I have a profit? Do I always have it?
+- If I put a map inside a farm, what profit do I have if I increase the number of workers on the map or if I increase the number of workers in the farm? If I remove the map and leave the farm increasing the workers does something change? How does efficiency change? If I remove everything and leave only a sequential node, does something change? How does the efficiency vary (becomes 1)?
+- Difference between work span model and amdahl law, he wanted to know that nodes must have the same execution time;
+- How is the speedup calculated?
+- Amdahl Law (with limit)
+- What should I add to a farm that takes into account both time and energy consumption (considering that both depend on the nw)? I have to take into account the degree of parallelism and the frequency of the processor. In the collector I can calculate the service time Ts. I can vary the number of workers and see how the energy changes as the nw increases. More worker = less CPU usage time with more consumption. I can stop when it becomes inconvenient to increase the nw for overhead;
+- Types of patterns;
+- Vectorization of the code;
+- Macro data flow works, with an example of conversion between "farm(pipe(f1, f2))", asking to draw the graph;
