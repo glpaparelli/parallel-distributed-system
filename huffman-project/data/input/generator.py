@@ -11,6 +11,9 @@ def create_file(size, unit):
     else:
         raise ValueError('Invalid unit specified')
 
+    # All ASCII characters
+    ascii_chars = string.ascii_letters + string.digits + string.punctuation + string.whitespace
+
     # Open file in write mode and fill it with random ascii characters
     with open('./ascii_at_random.txt', 'w') as f:
         while size_bytes > 0:
@@ -19,7 +22,7 @@ def create_file(size, unit):
             #   - the choice is iterated for min(size_bytes, 1024)
             #       - we create random strings of len 1024 except the "last time" where
             #         we need less chars to reach the desired file size
-            chars = ''.join(random.choice(string.ascii_letters) for i in range(min(size_bytes, 1024)))
+            chars = ''.join(random.choice(ascii_chars) for i in range(min(size_bytes, 1024)))
             # The string is written to the file
             f.write(chars)
             # We need size_bytes - the amount of bytes written now to reach the desired size
