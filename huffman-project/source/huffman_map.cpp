@@ -1,5 +1,8 @@
-#include "headers/huffman_map.hpp"
-#include "headers/huffman_tree.hpp"
+#include <string>
+#include <vector>
+
+#include "../headers/huffman_map.hpp"
+#include "../headers/huffman_tree.hpp"
 
 using namespace std;
 
@@ -27,8 +30,8 @@ void traverseTree(
  * @param root The root node of the Huffman tree.
  * @return The map of characters to Huffman codes.
  */
-vector<string> getHuffmanMap(huffman_tree::Node* root) {
-    vector<string> huffmanMap;
+vector<string> huffman_map::getHuffmanMap(huffman_tree::Node* root) {
+    vector<string> huffmanMap = vector<string>(256);
     string code;
 
     traverseTree(root, code, huffmanMap);

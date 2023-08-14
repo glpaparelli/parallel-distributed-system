@@ -47,4 +47,5 @@ namespace huffman_tree{
     /// @return The root of the tree
     Node* buildHuffmanTree(vector<int> &char_frequency);
 }
+
 #endif

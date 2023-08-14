@@ -1,16 +1,16 @@
 #ifndef HUFFMAN_MAP_HPP
 #define HUFFMAN_MAP_HPP
 
-#include <unordered_map>
+#include <vector>
 #include <string>
-#include "headers/huffman_tree.hpp"
+#include "huffman_tree.hpp"
 
 using namespace std; 
 
 namespace huffman_map{
-    /// @brief Creates the map character -> Huffman code
+    /// @brief Creates the map as the vector[character] = code
     /// @param root The root of the Huffman Tree
-    /// @return Return the map
+    /// @return Return the map as the vector[character] = code
     vector<string> getHuffmanMap(huffman_tree::Node* root);
 }
 

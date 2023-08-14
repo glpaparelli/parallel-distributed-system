@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-#include "headers/frequency_counters.hpp"
+#include "../headers/frequency_counters.hpp"
 
 using namespace std;
 
