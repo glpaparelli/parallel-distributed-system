@@ -14,19 +14,23 @@ namespace huffman_tree{
         Node* left;
         Node* right;
 
-        Node(char character, int frequency) {
+        /// @brief Constructor for the Node of the Huffman Tree
+        /// @param character
+        /// @param frequency 
+        Node(char character, int frequency){
             this->character = character;
             this->frequency = frequency;
             left = right = nullptr;
         }
 
-        ~Node() {
+        /// @brief Descturctor, to delete the tree
+        ~Node(){
             delete left;
             delete right;
         }
     };
 
-    struct compare {
+    struct compare{
         /// @brief Overloaded operator() function to compare two Node pointers based on their frequency counts.
         /// @param l First Node pointer.
         /// @param r Ssecond Node pointer.
@@ -39,10 +43,9 @@ namespace huffman_tree{
     /// @brief Print the Huffman code for each character in the tree
     /// @param root Root node of the tree
     /// @param s Current huffman code string
-    void printCodes(Node* root, std::string s);
+    void printCodes(Node* root, string s);
 
-
-    /// @brief Build the Huffman Tree 
+    /// @brief Build the Huffman Tree
     /// @param char_frequency Frequency of chars
     /// @return The root of the tree
     Node* buildHuffmanTree(vector<int> &char_frequency);

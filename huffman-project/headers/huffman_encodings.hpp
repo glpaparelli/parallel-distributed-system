@@ -11,7 +11,7 @@ namespace huffman_encodings{
     /// @param s String to be encoded 
     /// @param start Starting index 
     /// @param end End index
-    /// @param huffmanMap Huffman Map char -> huffman code
+    /// @param huffmanMap Huffman Map char -> Huffman code
     /// @return The encoded string
     string seqStringToBinary(
         const string &s, 

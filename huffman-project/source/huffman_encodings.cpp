@@ -12,9 +12,9 @@ string huffman_encodings::seqStringToBinary(
     const vector<string> &huffmanMap
 ){
     string sEncoded = "";
-    
+ 
     for(int i = start; i < end; i++)
         sEncoded = sEncoded + huffmanMap[static_cast<unsigned char>(s[i])];
-
+    
     return sEncoded;
 }

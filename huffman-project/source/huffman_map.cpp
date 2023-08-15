@@ -9,8 +9,8 @@ using namespace std;
 void traverseTree(
     huffman_tree::Node* node, 
     string code, 
-    vector<string> &huffmanMap)
-{
+    vector<string> &huffmanMap
+){
     if (node == nullptr) 
         return;
 
@@ -25,16 +25,12 @@ void traverseTree(
     traverseTree(node->right, code + "1", huffmanMap);
 }
 
-/**
- * @brief Function that builds the Huffman map using a Huffman tree.
- * @param root The root node of the Huffman tree.
- * @return The map of characters to Huffman codes.
- */
-vector<string> huffman_map::getHuffmanMap(huffman_tree::Node* root) {
+vector<string> huffman_map::getHuffmanMap(huffman_tree::Node* root){
     vector<string> huffmanMap = vector<string>(256);
     string code;
 
     traverseTree(root, code, huffmanMap);
 
+    // huffmanMap here is a vector[char] -> huffman code of that char
     return huffmanMap;
 }

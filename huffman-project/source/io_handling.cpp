@@ -7,14 +7,14 @@
 using namespace std;
 
 string io_handling::read(const string &path){
-    std::ifstream file(path);
+    ifstream file(path);
 
     if(!file.is_open()){
-        std::cerr << "Could not open the file - '" << std::endl;
+        cerr << "Could not open the file - '" << endl;
         exit(EXIT_FAILURE);
     }
 
-    std::stringstream buffer; 
+    stringstream buffer; 
     buffer << file.rdbuf();
     file.close();
     
@@ -25,7 +25,7 @@ void io_handling::write(const string &path, const string &s){
     ofstream file(path);
     
     if(!file.is_open()){
-        std::cerr << "Could not open the file - '" << std::endl;
+        cerr << "Could not open the file - '" << endl;
         exit(EXIT_FAILURE);
     }
 
