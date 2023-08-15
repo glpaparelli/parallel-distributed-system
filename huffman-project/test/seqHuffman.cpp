@@ -6,6 +6,7 @@
 #include "../headers/huffman_tree.hpp"
 #include "../headers/huffman_map.hpp"
 #include "../headers/huffman_encodings.hpp"
+#include "../headers/ascii_encodings.hpp"
 
 using namespace std;
 
@@ -39,10 +40,14 @@ int main() {
     }
     cout << "---------------------------------------------------------\n" << endl;
 
-
     // STEP 5: huffman encode a string
     string file_content_encoded = huffman_encodings::seqStringToBinary(file_content, 0, file_content.size(), huffmanMap);
     cout << "encoded: " << file_content_encoded << endl;
+    cout << "---------------------------------------------------------\n" << endl;
+
+    // STEP 6: convert the encoded binary string to ASCII
+    string file_content_compressed = ascii_encodings::seqBinaryToASCII(file_content_encoded, 0, file_content_encoded.size());
+    cout << "encoded to ASCII: " << file_content_compressed << endl;
     cout << "---------------------------------------------------------\n" << endl;
 
     return 1;
