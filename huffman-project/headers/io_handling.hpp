@@ -15,7 +15,7 @@ namespace io_handling{
     
     /// @brief write to a file
     /// @param path The path of the file to write
-    void write(const string &path);
+    void write(const string &path, const string &s);
 }
 
 #endif

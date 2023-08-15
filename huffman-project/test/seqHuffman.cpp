@@ -17,8 +17,8 @@ void print(std::vector<int> const &input) {
 
 int main() {
     // STEP 1: read the characters
-    string path = "./data/input/ascii_at_random.txt";
-    string file_content = io_handling::read(path);
+    string input_file_path = "./data/input/ascii_at_random.txt";
+    string file_content = io_handling::read(input_file_path);
     cout << "File file_content: " << file_content << endl;
     cout << "---------------------------------------------------------\n" << endl;
 
@@ -49,6 +49,10 @@ int main() {
     string file_content_compressed = ascii_encodings::seqBinaryToASCII(file_content_encoded, 0, file_content_encoded.size());
     cout << "encoded to ASCII: " << file_content_compressed << endl;
     cout << "---------------------------------------------------------\n" << endl;
+
+    // STEP 7: write the ascii encoded string to an output file
+    string output_file_path = "./data/output/huffman_output.txt";
+    io_handling::write(output_file_path, file_content_compressed);
 
     return 1;
 }
