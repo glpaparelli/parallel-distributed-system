@@ -5,6 +5,7 @@
 #include "../headers/frequency_counters.hpp"
 #include "../headers/huffman_tree.hpp"
 #include "../headers/huffman_map.hpp"
+#include "../headers/huffman_encodings.hpp"
 
 using namespace std;
 
@@ -16,12 +17,12 @@ void print(std::vector<int> const &input) {
 int main() {
     // STEP 1: read the characters
     string path = "./data/input/ascii_at_random.txt";
-    string contents = io_handling::read(path);
-    cout << "File contents: " << contents << endl;
+    string file_content = io_handling::read(path);
+    cout << "File file_content: " << file_content << endl;
     cout << "---------------------------------------------------------\n" << endl;
 
     // STEP 2: build the frequency
-    vector<int> char_frequency = frequency_counters::seqCounter(contents, 0, contents.size());
+    vector<int> char_frequency = frequency_counters::seqCounter(file_content, 0, file_content.size());
     print(char_frequency);
     cout << "---------------------------------------------------------\n" << endl;
 
@@ -36,6 +37,13 @@ int main() {
         char ith = (char) i; 
         cout << "char: " << ith << "->   code:" << huffmanMap[i] << endl;
     }
+    cout << "---------------------------------------------------------\n" << endl;
+
+
+    // STEP 5: huffman encode a string
+    string file_content_encoded = huffman_encodings::seqStringToBinary(file_content, 0, file_content.size(), huffmanMap);
+    cout << "encoded: " << file_content_encoded << endl;
+    cout << "---------------------------------------------------------\n" << endl;
 
     return 1;
 }
