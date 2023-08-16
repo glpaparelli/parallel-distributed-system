@@ -32,4 +32,31 @@ int main() {
     print(char_frequency);
     cout << "---------------------------------------------------------\n" << endl;
     
+    // STEP 3: build the Huffman Tree
+    cout << "STEP 3" << endl;
+    huffman_tree::Node* root = huffman_tree::build_huffman_tree(char_frequency);
+    huffman_tree::print_codes(root, "");
+    cout << "---------------------------------------------------------\n" << endl;
+
+    // STEP 4: build the Huffman Map
+    cout << "STEP 4" << endl;
+    vector<string> huffman_map = huffman_map::build_huffman_map(root);
+    for(int i = 0; i < huffman_map.size(); i++){
+        char ith = (char) i; 
+        cout << "char: " << ith << "->   code:" << huffman_map[i] << endl;
+    }
+    cout << "---------------------------------------------------------\n" << endl;
+
+    // STEP 5: huffman encode
+    cout << "STEP 5" << endl;
+    vector <string> huffman_encoded = huffman_encodings::multithread_string_to_binary(
+        file_content, 
+        num_thread, 
+        chunk_size, 
+        huffman_map
+    );
+    for(int i = 0; i < num_thread; i++)
+        cout << huffman_encoded[i];
+
+
 }
