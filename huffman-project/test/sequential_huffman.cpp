@@ -39,16 +39,26 @@ int main() {
 
     // STEP 4: build the Huffman Map
     cout << "STEP 4" << endl;
-    vector<string> huffmanMap = huffman_map::build_huffman_map(root);
-    for(int i = 0; i < huffmanMap.size(); i++){
+    vector<string> huffman_map = huffman_map::build_huffman_map(root);
+    for(int i = 0; i < huffman_map.size(); i++){
         char ith = (char) i; 
-        cout << "char: " << ith << "->   code:" << huffmanMap[i] << endl;
+        cout << "char: " << ith << "->   code:" << huffman_map[i] << endl;
     }
     cout << "---------------------------------------------------------\n" << endl;
 
     // STEP 5: huffman encode a string
     cout << "STEP 5" << endl;
-    string file_content_encoded = huffman_encodings::sequential_string_to_binary(file_content, 0, file_content.size(), huffmanMap);
+    string file_content_encoded = huffman_encodings::sequential_string_to_binary(file_content, 0, file_content.size(), huffman_map);
+    
+    // ASCII characters are 8 bits, hence the length of 
+    // the original input text is a multiple of 8. 
+    // this is not true once we created the Huffman code, as 
+    // characters have a shorter representation based on their
+    // frequence in the text. 
+    // hence we have to add a padding to the encoded text
+    int padding = 8 - (file_content_encoded.size() % 8);
+    file_content_encoded += string(padding, '0');
+
     cout << "encoded: " << file_content_encoded << endl;
     cout << "---------------------------------------------------------\n" << endl;
 
@@ -60,7 +70,7 @@ int main() {
 
     // STEP 7: write the ascii encoded string to an output file
     cout << "STEP 7" << endl;
-    string output_file_path = "./data/output/huffman_output.txt";
+    string output_file_path = "./data/output/sequential_output.txt";
     io_handling::write(output_file_path, file_content_compressed);
 
     return 1;

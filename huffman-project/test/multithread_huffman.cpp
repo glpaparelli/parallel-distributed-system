@@ -49,13 +49,35 @@ int main() {
 
     // STEP 5: huffman encode a string
     cout << "STEP 5" << endl;
-    string huffman_encoded = huffman_encodings::multithread_string_to_binary(
+    string file_content_encoded = huffman_encodings::multithread_string_to_binary(
         file_content, 
         num_thread, 
         chunk_size, 
         huffman_map
     );
-    cout << huffman_encoded << endl;
 
-    // STEP 6: ASCII endoding
+    // ASCII characters are 8 bits, hence the length of 
+    // the original input text is a multiple of 8. 
+    // this is not true once we created the Huffman code, as 
+    // characters have a shorter representation based on their
+    // frequence in the text. 
+    // hence we have to add a padding to the encoded text
+    int padding = 8 - (file_content_encoded.size() % 8);
+    file_content_encoded += string(padding, '0');
+
+    cout << file_content_encoded << endl;
+    cout << "---------------------------------------------------------\n" << endl;
+
+
+    // STEP 6: convert the encoded binary string to ASCII
+    cout << "STEP 6" << endl;
+    string file_content_compressed = ascii_encodings::multithread_binary_to_ASCII(file_content_encoded, num_thread, chunk_size);
+    cout << "encoded to ASCII: " << file_content_compressed << endl;
+    cout << "---------------------------------------------------------\n" << endl;
+
+    // STEP 7: write the ascii encoded string to an output file
+    cout << "STEP 7" << endl;
+    string output_file_path = "./data/output/multithread_output.txt";
+    io_handling::write(output_file_path, file_content_compressed);
+    
 }
