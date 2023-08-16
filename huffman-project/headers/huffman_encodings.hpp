@@ -26,7 +26,8 @@ namespace huffman_encodings{
     /// @param chunk_size Size of the string chunk assigned to each thread
     /// @param huffman_map Huffman Map char -> Huffman code
     /// @return The vector encoded chunks
-    vector<string> multithread_string_to_binary(
+    /// @return The encoded string
+    string multithread_string_to_binary(
         const string &s, 
         const int num_thread, 
         const int chunk_size, 

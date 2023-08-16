@@ -47,16 +47,15 @@ int main() {
     }
     cout << "---------------------------------------------------------\n" << endl;
 
-    // STEP 5: huffman encode
+    // STEP 5: huffman encode a string
     cout << "STEP 5" << endl;
-    vector <string> huffman_encoded = huffman_encodings::multithread_string_to_binary(
+    string huffman_encoded = huffman_encodings::multithread_string_to_binary(
         file_content, 
         num_thread, 
         chunk_size, 
         huffman_map
     );
-    for(int i = 0; i < num_thread; i++)
-        cout << huffman_encoded[i];
+    cout << huffman_encoded << endl;
 
-
+    // STEP 6: ASCII endoding
 }

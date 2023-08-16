@@ -23,7 +23,7 @@ string huffman_encodings::sequential_string_to_binary(
     return s_encoded;
 }
 
-vector<string> huffman_encodings::multithread_string_to_binary(
+string huffman_encodings::multithread_string_to_binary(
     const string &s, 
     const int num_threads, 
     const int chunk_size, 
@@ -36,6 +36,8 @@ vector<string> huffman_encodings::multithread_string_to_binary(
     int start = 0; 
     int end = chunk_size;
 
+    // the string is divided in chunks and each 
+    // chunk is encoded using the  huffman map
     for(int i = 0; i < num_threads; i++){
         // the last thread may get a a smaller chunk
         if(i == num_threads - 1)
@@ -63,8 +65,11 @@ vector<string> huffman_encodings::multithread_string_to_binary(
         end = end + chunk_size;
     }
 
-    for(int i = 0; i < num_threads; i++)
+    string result = "";
+    for(int i = 0; i < num_threads; i++){
         threads[i].join();
+        result = result + chunks_encoded[i];
+    }
 
-    return chunks_encoded;
+    return result;
 }
