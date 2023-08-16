@@ -5,12 +5,12 @@
 
 using namespace std; 
 
-string huffman_encodings::seqStringToBinary(
+string huffman_encodings::sequential_string_to_binary(
     const string &s, 
     const int start, 
     const int end, 
-    const vector<string> &huffmanMap
-){
+    const vector<string> &huffmanMap)
+{
     string sEncoded = "";
  
     for(int i = start; i < end; i++)

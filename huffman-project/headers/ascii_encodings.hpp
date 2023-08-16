@@ -12,7 +12,7 @@ namespace ascii_encodings{
     /// @param start Starting point
     /// @param end Ending of the string
     /// @return The converted ASCCI string
-    string seqBinaryToASCII(string &s, const int start, const int end);
+    string sequential_binary_to_ASCII(string &s, const int start, const int end);
 }
 
 #endif

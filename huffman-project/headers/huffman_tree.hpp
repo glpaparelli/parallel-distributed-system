@@ -43,12 +43,12 @@ namespace huffman_tree{
     /// @brief Print the Huffman code for each character in the tree
     /// @param root Root node of the tree
     /// @param s Current huffman code string
-    void printCodes(Node* root, string s);
+    void print_codes(Node* root, string s);
 
     /// @brief Build the Huffman Tree
     /// @param char_frequency Frequency of chars
     /// @return The root of the tree
-    Node* buildHuffmanTree(vector<int> &char_frequency);
+    Node* build_huffman_tree(vector<int> &char_frequency);
 }
 
 #endif

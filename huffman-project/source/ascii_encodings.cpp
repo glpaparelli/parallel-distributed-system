@@ -4,13 +4,13 @@
 
 using namespace std; 
 
-string ascii_encodings::seqBinaryToASCII(string &s, const int start, const int end){
+string ascii_encodings::sequential_binary_to_ASCII(string &s, const int start, const int end) {
     // ASCII characters are 8 bits, hence the length of 
     // the original input text is a multiple of 8. 
-    // This is not true once we created the Huffman code, as 
+    // this is not true once we created the Huffman code, as 
     // characters have a shorter representation based on their
     // frequence in the text. 
-    // Hence we have to add a padding to the encoded text
+    // hence we have to add a padding to the encoded text
     string s_ascii = "";
     int padding = 8 - (s.size() % 8);
     s += string(padding, '0');

@@ -6,7 +6,7 @@
 
 using namespace std;
 
-string io_handling::read(const string &path){
+string io_handling::read(const string &path) { 
     ifstream file(path);
 
     if(!file.is_open()){
@@ -21,7 +21,7 @@ string io_handling::read(const string &path){
     return buffer.str();
 }
 
-void io_handling::write(const string &path, const string &s){
+void io_handling::write(const string &path, const string &s) {
     ofstream file(path);
     
     if(!file.is_open()){

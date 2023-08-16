@@ -6,11 +6,11 @@
 
 using namespace std;
 
-void traverseTree(
+void traverse_tree(
     huffman_tree::Node* node, 
     string code, 
-    vector<string> &huffmanMap
-){
+    vector<string> &huffmanMap)
+{
     if (node == nullptr) 
         return;
 
@@ -19,17 +19,17 @@ void traverseTree(
         huffmanMap[static_cast<unsigned char>(node->character)] = code;
 
     // traverse left and append '0' to the code.
-    traverseTree(node->left, code + "0", huffmanMap);
+    traverse_tree(node->left, code + "0", huffmanMap);
 
     // traverse right and append '1' to the code.
-    traverseTree(node->right, code + "1", huffmanMap);
+    traverse_tree(node->right, code + "1", huffmanMap);
 }
 
-vector<string> huffman_map::getHuffmanMap(huffman_tree::Node* root){
+vector<string> huffman_map::build_huffman_map(huffman_tree::Node* root){
     vector<string> huffmanMap = vector<string>(256);
     string code;
 
-    traverseTree(root, code, huffmanMap);
+    traverse_tree(root, code, huffmanMap);
 
     // huffmanMap here is a vector[char] -> huffman code of that char
     return huffmanMap;

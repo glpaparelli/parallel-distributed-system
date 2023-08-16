@@ -11,7 +11,7 @@ namespace huffman_map{
     /// @brief Creates the map as the vector[character] = code
     /// @param root The root of the Huffman Tree
     /// @return Return the map as the vector[character] = code
-    vector<string> getHuffmanMap(huffman_tree::Node* root);
+    vector<string> build_huffman_map(huffman_tree::Node* root);
 }
 
 #endif 

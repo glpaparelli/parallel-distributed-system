@@ -13,7 +13,7 @@ namespace huffman_encodings{
     /// @param end End index
     /// @param huffmanMap Huffman Map char -> Huffman code
     /// @return The encoded string
-    string seqStringToBinary(
+    string sequential_string_to_binary(
         const string &s, 
         const int start, 
         const int end, 
