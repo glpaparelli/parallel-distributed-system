@@ -14,7 +14,6 @@ namespace ascii_encodings{
     /// @return The converted ASCCI string
     string sequential_binary_to_ASCII(const string &s, const int start, const int end);
 
-
     /// @brief Multithreadlly "convert" a binary string to a string in ASCII
     /// @param s String to be converted
     /// @param num_thread Number of threads to use
