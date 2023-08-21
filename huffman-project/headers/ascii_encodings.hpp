@@ -17,9 +17,14 @@ namespace ascii_encodings{
     /// @brief Multithreadlly "convert" a binary string to a string in ASCII
     /// @param s String to be converted
     /// @param num_thread Number of threads to use
-    /// @param chunk_size Size of the string chunk assigned to each thread
     /// @return The converted ASCII string
-    string multithread_binary_to_ASCII(const string &s, const int num_threads, const int chunk_size);
+    string multithread_binary_to_ASCII(const string &s, const int num_threads);
+
+    /// @brief "Convert" a binary string to a string in ASCII using FF
+    /// @param s String to be converted
+    /// @param num_workers Number of workers to use
+    /// @return The converted ASCII string
+    string fastflow_binary_to_ASCII(const string &s, const int num_workers);
 }
 
 #endif

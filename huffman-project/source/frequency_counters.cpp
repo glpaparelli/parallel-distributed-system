@@ -4,6 +4,8 @@
 #include <string>
 #include <jemalloc/jemalloc.h>
 #include <cstring>
+#include <ff/ff.hpp>
+#include <ff/parallel_for.hpp>
 
 #include "../headers/frequency_counters.hpp"
 
@@ -26,22 +28,19 @@ vector<int> frequency_counters::sequential_counter(
     return char_frequancy;
 }
 
-vector <int> frequency_counters::multithread_counter(
-    const string &s, 
-    const int num_threads, 
-    const int chunk_size) 
-{
+vector <int> frequency_counters::multithread_counter(const string &s, const int num_threads) {
     /**
      * we use je_malloc to allocate memory for each chunk of the text. 
      * this ensures that each thread has its own memory space to work with, 
      * reducing the contention for accessing the heap and improving performance.
     */
-    
+
     vector<vector<int>> partial_frequency(num_threads);
 
     // static load balancing: the task are equally complex and distributed
     vector<thread> threads;
     int start = 0; 
+    int chunk_size = s.size() / num_threads;
     int end = chunk_size;
 
     // counting chars for each chunk
@@ -82,4 +81,31 @@ vector <int> frequency_counters::multithread_counter(
     }
 
     return char_frequancy;
+}
+
+vector<int> frequency_counters::fastflow_counter(const string &s, const int num_workers) {
+    vector<int> char_frequency = vector<int>(256, 0);
+    ff::ParallelForReduce<vector<int>> ffForReduce(num_workers);
+
+    ffForReduce.parallel_reduce_static(
+        char_frequency, 
+        vector<int>(256, 0),
+        0, 
+        s.size(), 
+        1, 
+        0,
+        [&s](const long i, vector<int> &partial){
+            // Counting
+            int pos = static_cast<unsigned char>(s[i]);
+            partial[pos]++;
+        },
+        [](vector<int> &char_frequency, const vector<int> &partial){
+            // Merging
+            for (int i = 0; i < 256; i++)
+                char_frequency[i] += partial[i];
+        },
+        num_workers
+    );
+
+    return char_frequency;
 }

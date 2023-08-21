@@ -17,9 +17,14 @@ namespace frequency_counters{
     /// @brief Compute the frequency of chars in a string with multi-threading
     /// @param s String of which we want the char frequency
     /// @param num_thread Number of threads to use
-    /// @param chunk_size Size of the string chunk assigned to each thread
     /// @return Vector that associate the char to its occurrences
-    vector<int> multithread_counter(const string &s, const int num_threads, const int chunk_size);
+    vector<int> multithread_counter(const string &s, const int num_threads);
+
+    /// @brief Compute the frequency of chars in a string with FastFlow
+    /// @param s String of which we want the char frequency
+    /// @param num_thread Number of threads to use
+    /// @return Vector that associate the char to its occurrences
+    vector<int> fastflow_counter(const string &s, const int num_workers);
 }
 
 #endif

@@ -4,6 +4,8 @@
 #include <thread>
 #include <cstring>
 #include <jemalloc/jemalloc.h>
+#include <ff/ff.hpp>
+#include <ff/parallel_for.hpp>
 
 #include "../headers/huffman_encodings.hpp"
 
@@ -18,7 +20,7 @@ string huffman_encodings::sequential_string_to_binary(
     string s_encoded = "";
  
     for(int i = start; i < end; i++)
-        s_encoded = s_encoded + huffman_map[static_cast<unsigned char>(s[i])];
+        s_encoded += huffman_map[static_cast<unsigned char>(s[i])];
     
     return s_encoded;
 }
@@ -26,7 +28,6 @@ string huffman_encodings::sequential_string_to_binary(
 string huffman_encodings::multithread_string_to_binary(
     const string &s, 
     const int num_threads, 
-    const int chunk_size, 
     const vector<string> &huffman_map)
 {   
     vector<string> chunks_encoded(num_threads);
@@ -34,6 +35,7 @@ string huffman_encodings::multithread_string_to_binary(
     // static load balancing: the task are equally complex and distributed
     vector<thread> threads; 
     int start = 0; 
+    int chunk_size = s.size() / num_threads;
     int end = chunk_size;
 
     // the string is divided in chunks and each 
@@ -45,7 +47,7 @@ string huffman_encodings::multithread_string_to_binary(
 
         // creates a new thread
         threads.push_back(thread(
-            // define a function to compute the frequency for a chunk of text
+            // define a function to compute the frequency for a chunk of s
             [&chunks_encoded, i, &s, start, end, huffman_map](){
                 // allocate the memory for the chunk
                 char *chunk = (char *) malloc(end - start + 1); 
@@ -62,14 +64,43 @@ string huffman_encodings::multithread_string_to_binary(
             }));
 
         start = end; 
-        end = end + chunk_size;
+        end += chunk_size;
     }
 
     string result = "";
     for(int i = 0; i < num_threads; i++){
         threads[i].join();
-        result = result + chunks_encoded[i];
+        result += chunks_encoded[i];
     }
+
+    return result;
+}
+
+string huffman_encodings::fastflow_string_to_binary(
+    const string &s, 
+    const int num_workers,
+    const vector<string> huffman_map)
+{
+    string result = "";
+
+    ff::ParallelForReduce<string> ffForReduce(num_workers);
+    ffForReduce.parallel_reduce_static(
+        result, 
+        "",
+        0, 
+        s.size(), 
+        1, 
+        0,
+        [&huffman_map, &s](const long i, string &partial){
+            // Encoding
+            int pos = static_cast<unsigned char>(s[i]);
+            partial += huffman_map[pos];
+        },
+        [](string &result, const string &partial){
+            // Merging
+            result += partial;
+        },
+        num_workers);
 
     return result;
 }

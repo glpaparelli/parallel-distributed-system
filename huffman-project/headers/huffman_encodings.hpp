@@ -20,19 +20,30 @@ namespace huffman_encodings{
         const vector<string> &huffman_map
     );
 
-    /// @brief  Multithreadlly compute the encoding of a string: each char of the string to its huffman code
+    /// @brief Multithreadlly compute the encoding of a string: each char of the string to its huffman code
     /// @param s String to be encoded 
     /// @param num_thread Number of threads to use
-    /// @param chunk_size Size of the string chunk assigned to each thread
     /// @param huffman_map Huffman Map char -> Huffman code
     /// @return The vector encoded chunks
     /// @return The encoded string
     string multithread_string_to_binary(
         const string &s, 
         const int num_thread, 
-        const int chunk_size, 
         const vector<string> &huffman_map
     );
+
+    /// @brief Compute the encoding of a string using FF: each char of the string to its huffman code
+    /// @param s String to be encoded 
+    /// @param huffman_map Huffman Map char -> Huffman code
+    /// @param num_workers Number of workers to use
+    /// @return The encoded string
+    string fastflow_string_to_binary(
+        const string &s, 
+        const int num_workers,
+        const vector<string> huffman_map
+    );
+
+
 }
 
 #endif
