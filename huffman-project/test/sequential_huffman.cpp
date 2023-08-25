@@ -52,14 +52,7 @@ int main() {
     // STEP 5: huffman encode a string
     start = std::chrono::high_resolution_clock::now();
     string file_content_encoded = huffman_encodings::sequential_string_to_binary(file_content, 0, file_content.size(), huffman_map);
-    // ASCII characters are 8 bits, hence the length of 
-    // the original input text is a multiple of 8. 
-    // this is not true once we created the Huffman code, as 
-    // characters have a shorter representation based on their
-    // frequence in the text. 
-    // hence we have to add a padding to the encoded text
-    int padding = 8 - (file_content_encoded.size() % 8);
-    file_content_encoded += string(padding, '0');
+    huffman_encodings::add_padding(file_content_encoded);
     end = std::chrono::high_resolution_clock::now();
     elapsed = end - start;
     std::cout << "Time needed for string to binary: " << elapsed.count() << " seconds" << std::endl;

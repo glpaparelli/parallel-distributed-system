@@ -34,46 +34,30 @@ string huffman_encodings::multithread_string_to_binary(
 
     // static load balancing: the task are equally complex and distributed
     vector<thread> threads; 
-    int start = 0; 
     int chunk_size = s.size() / num_threads;
+    int start = 0; 
     int end = chunk_size;
 
-    // the string is divided in chunks and each 
-    // chunk is encoded using the  huffman map
-    for(int i = 0; i < num_threads; i++){
-        // the last thread may get a a smaller chunk
-        if(i == num_threads - 1)
+    for (int i = 0; i < num_threads; i++) {
+        if (i == num_threads - 1)
             end = s.length();
 
-        // creates a new thread
         threads.push_back(thread(
-            // define a function to compute the frequency for a chunk of s
-            [&chunks_encoded, i, &s, start, end, huffman_map](){
-                // allocate the memory for the chunk
-                char *chunk = (char *) malloc(end - start + 1); 
-
-                // copy and add limiter to the chunk
-                strncpy(chunk, s.c_str() + start, end - start);
-                chunk[end - start] = '\0';
-
-                // compute the task 
-                chunks_encoded[i] = sequential_string_to_binary(chunk, 0, end - start, huffman_map);
-
-                // free the memory allocated to the chunk
-                free(chunk);
+            [&chunks_encoded, i, &s, start, end, huffman_map]() {
+                chunks_encoded[i] = sequential_string_to_binary(s, start, end, huffman_map);
             }));
 
-        start = end; 
+        start = end;
         end += chunk_size;
     }
 
-    string result = "";
+    string s_encoded = "";
     for(int i = 0; i < num_threads; i++){
         threads[i].join();
-        result += chunks_encoded[i];
+        s_encoded += chunks_encoded[i];
     }
 
-    return result;
+    return s_encoded;
 }
 
 string huffman_encodings::fastflow_string_to_binary(
@@ -81,26 +65,43 @@ string huffman_encodings::fastflow_string_to_binary(
     const int num_workers,
     const vector<string> huffman_map)
 {
-    string result = "";
+    string s_encoded = "";
 
     ff::ParallelForReduce<string> ffForReduce(num_workers);
+
+    // parallel_reduce_static divides the range of elements into fixed-size chunks
+    // and assigns each chunk to a thread for parallel processing. 
+    // The reduction operation is performed in parallel on each chunk, 
+    // and the partial results are combined using the merging operation to obtain the final result.
     ffForReduce.parallel_reduce_static(
-        result, 
-        "",
-        0, 
-        s.size(), 
-        1, 
-        0,
+        s_encoded, // accumulator
+        "", // identity value
+        0, // first value of the iteration variable
+        s.size(), // last value of the iteration variable 
+        1, // step size
+        0, // grain: min amount of work to each worker
         [&huffman_map, &s](const long i, string &partial){
-            // Encoding
+            // encoding step
             int pos = static_cast<unsigned char>(s[i]);
             partial += huffman_map[pos];
         },
-        [](string &result, const string &partial){
-            // Merging
-            result += partial;
+        [](string &s_encoded, const string &partial){
+            // merging step
+            s_encoded += partial;
         },
         num_workers);
 
-    return result;
+    return s_encoded;
+}
+
+
+void huffman_encodings::add_padding(string &s){
+    // ASCII characters are 8 bits, hence the length of 
+    // the original input s is a multiple of 8. 
+    // this is not true once we created the Huffman code, as 
+    // characters have a shorter representation based on their
+    // frequence in the s. 
+    // hence we have to add a padding to the encoded s
+    int padding = 8 - (s.size() % 8);
+    s += string(padding, '0');
 }

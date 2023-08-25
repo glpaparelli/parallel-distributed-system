@@ -12,13 +12,13 @@
 using namespace std; 
 
 string ascii_encodings::sequential_binary_to_ASCII(const string &s, const int start, const int end) {
-    string result = "";
+    string s_encoded = "";
     for (int i = start; i < end; i += 8){
         bitset<8> bits(s.substr(i, 8));
-        result += char(bits.to_ulong());
+        s_encoded += char(bits.to_ulong());
     }
 
-    return result;
+    return s_encoded;
 }
 
 string ascii_encodings::multithread_binary_to_ASCII(const string &s, const int num_threads) {
@@ -31,59 +31,41 @@ string ascii_encodings::multithread_binary_to_ASCII(const string &s, const int n
     chunk_size -= chunk_size % 8;
     int end = chunk_size;
 
-    // the string is divided in chunks and each 
-    // chunk is encoded using the  huffman map
-    for(int i = 0; i < num_threads; i++){
-        // the last thread may get a a smaller chunk
-        if(i == num_threads - 1)
-            end = s.length();
+    // Encoding
+    for (int i = 0; i < num_threads; i++) {
+        if (i == num_threads - 1)
+            end = s.size();
 
-        // creates a new thread
         threads.push_back(thread(
-            // define a function to compute the frequency for a chunk of text
-            [&chunks_in_ascii, i, &s, start, end](){
-                // allocate the memory for the chunk
-                char *chunk = (char *) malloc(end - start + 1); 
-
-                // copy and add limiter to the chunk
-                strncpy(chunk, s.c_str() + start, end - start);
-                chunk[end - start] = '\0';
-
-                // compute the task 
-                chunks_in_ascii[i] = sequential_binary_to_ASCII(chunk, 0, end - start);
-
-                // free the memory allocated to the chunk
-                free(chunk);
+            [&chunks_in_ascii, i, &s, start, end]() {
+                chunks_in_ascii[i] = sequential_binary_to_ASCII(s, start, end);
             }));
 
-        start = end; 
+        start = end;
         end += chunk_size;
     }
 
-    string result = "";
+    string s_encoded = "";
     for(int i = 0; i < num_threads; i++){
         threads[i].join();
-        result += chunks_in_ascii[i];
+        s_encoded += chunks_in_ascii[i];
     }
 
-    return result;
+    return s_encoded;
 }
 
 string ascii_encodings::fastflow_binary_to_ASCII(const string &s, const int num_workers){
     vector<string> chunks_in_ascii(num_workers);
-
-    // static load balancing: the task are equally complex and distributed
-    ff::ParallelFor ffFor(num_workers);
-
     // round down to the closest multiple of 8 (as ASCII are 8 bits)
     int chunk_size = s.size() / num_workers;
     chunk_size -= chunk_size % 8;
 
+    ff::ParallelFor ffFor(num_workers);
     ffFor.parallel_for_static(
-        0, 
-        num_workers, 
-        1, 
-        0,
+        0, // first
+        num_workers, // last
+        1, // step
+        0, // grain
         [chunk_size, num_workers, &chunks_in_ascii, &s](const long i){
             int start = i * chunk_size;
             int end = start + chunk_size;
@@ -95,9 +77,9 @@ string ascii_encodings::fastflow_binary_to_ASCII(const string &s, const int num_
         }
     );
 
-    string result = "";
+    string s_encoded = "";
     for (int i = 0; i < num_workers; i++)
-        result += chunks_in_ascii[i];
+        s_encoded += chunks_in_ascii[i];
 
-    return result;
+    return s_encoded;
 }

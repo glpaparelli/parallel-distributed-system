@@ -42,8 +42,10 @@ namespace huffman_encodings{
         const int num_workers,
         const vector<string> huffman_map
     );
-
-
+    
+    /// @brief Encoded strings are not anymore multiple of 8, hence we add a padding
+    /// @param s String to which we add the padding
+    void add_padding(string &s);
 }
 
 #endif

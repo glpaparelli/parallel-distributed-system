@@ -87,20 +87,24 @@ vector<int> frequency_counters::fastflow_counter(const string &s, const int num_
     vector<int> char_frequency = vector<int>(256, 0);
     ff::ParallelForReduce<vector<int>> ffForReduce(num_workers);
 
+    // parallel_reduce_static divides the range of elements into fixed-size chunks
+    // and assigns each chunk to a thread for parallel processing. 
+    // The reduction operation is performed in parallel on each chunk, 
+    // and the partial results are combined using the merging operation to obtain the final result.
     ffForReduce.parallel_reduce_static(
-        char_frequency, 
-        vector<int>(256, 0),
-        0, 
-        s.size(), 
-        1, 
-        0,
+        char_frequency, // accumulator
+        vector<int>(256, 0), // identity value
+        0, // first value of the iteration variable
+        s.size(), // last value of the iteration variable 
+        1, // step size
+        0, // grain: min amount of work to each worker
         [&s](const long i, vector<int> &partial){
-            // Counting
+            // counting step
             int pos = static_cast<unsigned char>(s[i]);
             partial[pos]++;
         },
         [](vector<int> &char_frequency, const vector<int> &partial){
-            // Merging
+            // merging step
             for (int i = 0; i < 256; i++)
                 char_frequency[i] += partial[i];
         },

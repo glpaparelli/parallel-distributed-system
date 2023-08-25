@@ -17,7 +17,7 @@ void print(std::vector<int> const &input) {
 }
 
 int main() {
-
+    
     auto start_to_finish = std::chrono::high_resolution_clock::now();
 
     // STEP 1: read the characters
@@ -37,7 +37,6 @@ int main() {
     elapsed = end - start;
     std::cout << "Time needed for frequency: " << elapsed.count() << " seconds" << std::endl;
     
-    
     // STEP 3: build the Huffman Tree
     start = std::chrono::high_resolution_clock::now();
     huffman_tree::Node* root = huffman_tree::build_huffman_tree(char_frequency);
@@ -45,7 +44,6 @@ int main() {
     elapsed = end - start;
     std::cout << "Time needed for tree building: " << elapsed.count() << " seconds" << std::endl;
     
-
     // STEP 4: build the Huffman Map
     start = std::chrono::high_resolution_clock::now();
     vector<string> huffman_map = huffman_map::build_huffman_map(root);
@@ -60,14 +58,7 @@ int main() {
         num_thread, 
         huffman_map
     );
-    // ASCII characters are 8 bits, hence the length of 
-    // the original input text is a multiple of 8. 
-    // this is not true once we created the Huffman code, as 
-    // characters have a shorter representation based on their
-    // frequence in the text. 
-    // hence we have to add a padding to the encoded text
-    int padding = 8 - (file_content_encoded.size() % 8);
-    file_content_encoded += string(padding, '0');
+    huffman_encodings::add_padding(file_content_encoded);
     end = std::chrono::high_resolution_clock::now();
     elapsed = end - start;
     std::cout << "Time needed for string to binary: " << elapsed.count() << " seconds" << std::endl;
