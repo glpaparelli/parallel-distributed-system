@@ -7,7 +7,7 @@
 #include <ff/ff.hpp>
 #include <ff/parallel_for.hpp>
 
-#include "../headers/huffman_encodings.hpp"
+#include "../headers/steps/huffman_encodings.hpp"
 
 using namespace std; 
 

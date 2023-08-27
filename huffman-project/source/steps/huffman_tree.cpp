@@ -2,7 +2,7 @@
 #include <queue>
 #include <vector>
 
-#include "../headers/huffman_tree.hpp"
+#include "../headers/steps/huffman_tree.hpp"
 
 using namespace std; 
 

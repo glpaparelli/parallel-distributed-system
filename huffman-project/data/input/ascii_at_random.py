@@ -15,7 +15,7 @@ def create_file(size, unit):
     ascii_chars = string.ascii_letters + string.digits + string.punctuation + string.whitespace
 
     # Open file in write mode and fill it with random ascii characters
-    with open('./ascii_at_random.txt', 'w') as f:
+    with open(f"./{size}{unit}.txt", 'w') as f:
         while size_bytes > 0:
             # Generate a string of random ASCII chars using a list comprehension
             # - random.choice(string.ascii_letters) chooses a random ASCII char

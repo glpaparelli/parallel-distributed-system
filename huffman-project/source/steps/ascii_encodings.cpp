@@ -7,7 +7,7 @@
 #include <ff/parallel_for.hpp>
 #include <bitset>
 
-#include "../headers/ascii_encodings.hpp"
+#include "../headers/steps/ascii_encodings.hpp"
 
 using namespace std; 
 

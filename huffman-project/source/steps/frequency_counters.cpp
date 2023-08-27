@@ -7,7 +7,7 @@
 #include <ff/ff.hpp>
 #include <ff/parallel_for.hpp>
 
-#include "../headers/frequency_counters.hpp"
+#include "../headers/steps/frequency_counters.hpp"
 
 using namespace std;
 

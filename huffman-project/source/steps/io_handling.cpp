@@ -2,15 +2,14 @@
 #include <sstream>
 #include <iostream>
 
-#include "../headers/io_handling.hpp"
+#include "../headers/steps/io_handling.hpp"
 
 using namespace std;
 
 string io_handling::read(const string &path) { 
     ifstream file(path);
-
     if(!file.is_open()){
-        cerr << "Could not open the file - '" << endl;
+        cerr << "Could not open the file at: " + path << endl;
         exit(EXIT_FAILURE);
     }
 
