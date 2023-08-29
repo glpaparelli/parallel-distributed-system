@@ -2,7 +2,6 @@
 #include <vector>
 #include <thread>
 #include <string>
-#include <jemalloc/jemalloc.h>
 #include <cstring>
 #include <ff/ff.hpp>
 #include <ff/parallel_for.hpp>
@@ -53,18 +52,7 @@ vector <int> frequency_counters::multithread_counter(const string &s, const int 
         threads.push_back(thread(
             // define a function to compute the frequency for a chunk of text
             [&partial_frequency, i, &s, start, end](){
-                // allocate the memory for the chunk
-                char *chunk = (char *) malloc(end - start + 1); 
-
-                // copy and add limiter to the chunk
-                strncpy(chunk, s.c_str() + start, end - start);
-                chunk[end - start] = '\0';
-
-                // compute the task
-                partial_frequency[i] = sequential_counter(chunk, 0, end - start);
-
-                // free the memory allocated to the chunk
-                free(chunk);
+                partial_frequency[i] = sequential_counter(s, start, end);
             }));
 
         start = end; 
@@ -100,8 +88,8 @@ vector<int> frequency_counters::fastflow_counter(const string &s, const int num_
         0, // grain: min amount of work to each worker
         [&s](const long i, vector<int> &partial){
             // counting step
-            int pos = static_cast<unsigned char>(s[i]);
-            partial[pos]++;
+            int c_int = static_cast<unsigned char>(s[i]);
+            partial[c_int]++;
         },
         [](vector<int> &char_frequency, const vector<int> &partial){
             // merging step

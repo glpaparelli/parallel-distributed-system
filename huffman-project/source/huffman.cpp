@@ -14,6 +14,7 @@
 using namespace std;
 using namespace chrono;
 
+// compute huffman sequentially and returns the timings
 vector<duration<double>> huffman::sequential_huffman(const string file_name){
     vector<duration<double>> durations; 
     string input_file  = "./data/input/" + file_name;
@@ -84,6 +85,7 @@ vector<duration<double>> huffman::sequential_huffman(const string file_name){
     return durations;
 }
 
+// compute huffman using multithreading and returns the timings
 vector<duration<double>> huffman::multithread_huffman(
     const string file_name, 
     const int num_threads
@@ -147,6 +149,7 @@ vector<duration<double>> huffman::multithread_huffman(
     return durations;
 }
 
+// compute huffman using fastflow and returns the timings
 vector<duration<double>> huffman::fastflow_huffman(
     const string file_name, 
     const int num_threads

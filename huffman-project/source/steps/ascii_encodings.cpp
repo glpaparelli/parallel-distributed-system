@@ -36,6 +36,7 @@ string ascii_encodings::multithread_binary_to_ASCII(const string &s, const int n
         if (i == num_threads - 1)
             end = s.size();
 
+        // Each threads compute its chunk
         threads.push_back(thread(
             [&chunks_in_ascii, i, &s, start, end]() {
                 chunks_in_ascii[i] = sequential_binary_to_ASCII(s, start, end);
@@ -45,6 +46,7 @@ string ascii_encodings::multithread_binary_to_ASCII(const string &s, const int n
         end += chunk_size;
     }
 
+    // Merge the results computed by the threads
     string s_encoded = "";
     for(int i = 0; i < num_threads; i++){
         threads[i].join();
@@ -54,31 +56,33 @@ string ascii_encodings::multithread_binary_to_ASCII(const string &s, const int n
     return s_encoded;
 }
 
-string ascii_encodings::fastflow_binary_to_ASCII(const string &s, const int num_workers){
-    vector<string> chunks_in_ascii(num_workers);
+string ascii_encodings::fastflow_binary_to_ASCII(const string &s, const int num_threads){
+    vector<string> chunks_in_ascii(num_threads);
     // round down to the closest multiple of 8 (as ASCII are 8 bits)
-    int chunk_size = s.size() / num_workers;
+    int chunk_size = s.size() / num_threads;
     chunk_size -= chunk_size % 8;
 
-    ff::ParallelFor ffFor(num_workers);
+    // Encoding phase
+    ff::ParallelFor ffFor(num_threads);
     ffFor.parallel_for_static(
         0, // first
-        num_workers, // last
+        num_threads, // last
         1, // step
         0, // grain
-        [chunk_size, num_workers, &chunks_in_ascii, &s](const long i){
+        [chunk_size, num_threads, &chunks_in_ascii, &s](const long i){
             int start = i * chunk_size;
             int end = start + chunk_size;
 
-            if (i == num_workers - 1)
+            if (i == num_threads - 1)
                 end = s.length();
 
             chunks_in_ascii[i] = sequential_binary_to_ASCII(s, start, end);
         }
     );
 
+    // Merging phase
     string s_encoded = "";
-    for (int i = 0; i < num_workers; i++)
+    for (int i = 0; i < num_threads; i++)
         s_encoded += chunks_in_ascii[i];
 
     return s_encoded;

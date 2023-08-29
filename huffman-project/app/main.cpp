@@ -71,7 +71,7 @@ void automatic(){
     file.close();
     cout << "Completed Measuring Sequential Implementation" << endl;
 
-    // for multithread implementation
+    // same but for multithread implementation, using incrementally more threads
     five_durations.clear();
     avg.assign(8, duration<double>::zero());
     file.open("./results/multithreaded.csv");
@@ -112,7 +112,7 @@ void automatic(){
     file.close();
     cout << "Completed Measuring Multithreaded Implementation" << endl;
 
-    //for fastflow implementation
+    // same but for fastflow implementation, using incrementally more threads
     five_durations.clear();
     avg.assign(8, duration<double>::zero());
     file.open("./results/fastflow.csv");
@@ -209,9 +209,8 @@ void help(){
     cout << "For the interactive usage type: ./main -i" << endl;
 }
 
+// tested, code just in case
 void consistency_test(string file_name, int num_thread){
-    //const int num_thread = 16;
-
     // read the file
     string input_file_path = "./data/input/" + file_name;
     string content = io_handling::read(input_file_path);
@@ -286,8 +285,10 @@ int main(int argc, char* argv[]){
 
     string command = argv[1];
     if(command == "-a")
+        // automatically compute the timings for each implementation
         automatic();
     else if(command == "-i")
+        // command line interface to execute a specific implementation with specific parameters
         interactive();
     else
         help();
