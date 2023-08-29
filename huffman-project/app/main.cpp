@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <cassert>
+#include <thread>
 
 #include "../headers/huffman.hpp"
 #include "../headers/steps/io_handling.hpp"
@@ -75,8 +76,9 @@ void automatic(){
     avg.assign(8, duration<double>::zero());
     file.open("./results/multithreaded.csv");
     int num_threads = 2;
+    int max_threads = thread::hardware_concurrency();
     cout << "Start Measuring Multithreaded Implementation" << endl;
-    while (num_threads <= 32){
+    while (num_threads <= max_threads){
         file << "file size, #threads, avg read time, avg count time, avg tree time, avg map time, avg encode time, avg ascii time, avg write time, avg start to finish time" << endl;
 
         for(string f : file_names){
@@ -116,7 +118,7 @@ void automatic(){
     file.open("./results/fastflow.csv");
     num_threads = 2;
     cout << "Start Measuring Fastflow Implementation" << endl;
-    while (num_threads <= 32){
+    while (num_threads <= max_threads){
         file << "file size, #threads, avg read time, avg count time, avg tree time, avg map time, avg encode time, avg ascii time, avg write time, avg start to finish time" << endl;
 
         for(string f : file_names){
