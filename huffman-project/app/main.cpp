@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <string>
+#include <cassert>
 
 #include "../headers/huffman.hpp"
 #include "../headers/steps/io_handling.hpp"
@@ -13,6 +15,21 @@
 using namespace std; 
 using namespace chrono;
 
+// ugly way to print timings
+void print_timings(vector<duration<double>> results){
+    cout << "Time for READ: " << results[0].count() << endl;
+    cout << "Time for COUNT: " << results[1].count() << endl;
+    cout << "Time for TREE: " << results[2].count() << endl;
+    cout << "Time for MAP: " << results[3].count() << endl;
+    cout << "Time for ENCODE: " << results[4].count() << endl;
+    cout << "Time for ASCII: " << results[5].count() << endl;
+    cout << "Time for READ: " << results[6].count() << endl;
+
+    cout << endl; 
+    cout << "Time needed for completion: " << results[7].count() << endl;
+}
+
+// for each implementation compute the average timings aand write them in a csv file
 void automatic(){
     vector<string> file_names = {"1MB.txt", "5MB.txt", "10MB.txt", "50MB.txt", "100MB.txt"};
 
@@ -135,7 +152,53 @@ void automatic(){
 }
 
 void interactive(){
+    cout << "Choose the implementation to use:" << endl;
+    cout << "1) Sequential" << endl;
+    cout << "2) Multithread" << endl;
+    cout << "3) Fastflow" << endl; 
+    cout << endl;
+    cout << "> ";
+    string s_imp; 
+    getline(cin, s_imp);
+    int imp = stoi(s_imp); 
 
+    cout << endl;
+    cout << "Enter the size of the input file, e.g., 1MB\n" << endl;
+    string file_name;
+    cout << "> ";
+    getline (cin, file_name);
+    cout << endl;
+
+    file_name += ".txt";
+    int num_threads; 
+
+    vector<duration<double>> results;
+
+    switch(imp) {
+        case 1: 
+            results = huffman::sequential_huffman(file_name);
+            break; 
+        case 2: 
+            cout << "Enter the number of threads to use\n" << endl;
+            cout << "> ";   
+            cin >> num_threads;
+            cout << endl;
+
+            results = huffman::multithread_huffman(file_name, num_threads);
+            break;
+        case 3: 
+            cout << "Enter the number of threads to use\n" << endl;
+            cout << "> ";
+            cin >> num_threads;
+            cout << endl;
+
+            results = huffman::fastflow_huffman(file_name, num_threads);
+            break;
+        default: 
+            cout << "Invalid input: Enter the number of the implementation to use" << endl;
+    }
+
+    print_timings(results);
 }
 
 void help(){
@@ -144,6 +207,74 @@ void help(){
     cout << "For the interactive usage type: ./main -i" << endl;
 }
 
+void consistency_test(string file_name, int num_thread){
+    //const int num_thread = 16;
+
+    // read the file
+    string input_file_path = "./data/input/" + file_name;
+    string content = io_handling::read(input_file_path);
+   
+    // TEST: char frequency consistency
+    vector<int> sequential_char_frequency = frequency_counters::sequential_counter(
+        content, 
+        0, 
+        content.size()
+    );
+    vector<int> multithread_char_frequency = frequency_counters::multithread_counter(
+        content, 
+        num_thread
+    );
+    vector<int> fastflow_char_frequency = frequency_counters::fastflow_counter(content, num_thread);
+    assert(sequential_char_frequency == multithread_char_frequency);
+    assert(sequential_char_frequency == fastflow_char_frequency);
+
+    // build the tree and fromm it the mamp
+    huffman_tree::Node* root = huffman_tree::build_huffman_tree(sequential_char_frequency);
+    vector<string> huffman_map = huffman_map::build_huffman_map(root);
+
+    // TEST: string encoding consistency
+    string sequential_content_encoded = huffman_encodings::sequential_string_to_binary(
+        content, 
+        0, 
+        content.length(),
+        huffman_map
+    );
+
+    string multithread_content_encoded = huffman_encodings::multithread_string_to_binary(
+        content, 
+        num_thread, 
+        huffman_map
+    );
+    string fastflow_content_encoded = huffman_encodings::fastflow_string_to_binary(
+        content, 
+        num_thread, 
+        huffman_map
+    );
+    assert(sequential_content_encoded == multithread_content_encoded);
+    assert(sequential_content_encoded == fastflow_content_encoded);
+    
+    // clarity sugar
+    string content_encoded = sequential_content_encoded;
+    // add padding to the encoded strings
+    huffman_encodings::add_padding(content_encoded);
+
+    // TEST: encoded string in ASCII consistency
+    string sequential_content_compressed = ascii_encodings::sequential_binary_to_ASCII(
+        content_encoded, 
+        0, 
+        content_encoded.length()
+    );
+    string multithread_content_compressed = ascii_encodings::multithread_binary_to_ASCII(
+        content_encoded, 
+        num_thread
+    );
+    string fastflow_content_compressed = ascii_encodings::fastflow_binary_to_ASCII(
+        content_encoded, 
+        num_thread
+    );
+    assert(sequential_content_compressed == multithread_content_compressed);
+    assert(sequential_content_compressed == fastflow_content_compressed);
+}
 
 int main(int argc, char* argv[]){
     if(argc != 2){
