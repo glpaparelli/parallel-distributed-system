@@ -116,7 +116,7 @@ void automatic(){
     five_durations.clear();
     avg.assign(8, duration<double>::zero());
     file.open("./results/fastflow.csv");
-    num_threads = 2;
+    num_threads = 1;
     cout << "Start Measuring Fastflow Implementation" << endl;
     while (num_threads <= max_threads){
         file << "file size, #threads, avg read time, avg count time, avg tree time, avg map time, avg encode time, avg ascii time, avg write time, avg start to finish time" << endl;
