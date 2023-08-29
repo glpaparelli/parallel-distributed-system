@@ -75,7 +75,7 @@ void automatic(){
     five_durations.clear();
     avg.assign(8, duration<double>::zero());
     file.open("./results/multithreaded.csv");
-    int num_threads = 2;
+    int num_threads = 1;
     int max_threads = thread::hardware_concurrency();
     cout << "Start Measuring Multithreaded Implementation" << endl;
     while (num_threads <= max_threads){
