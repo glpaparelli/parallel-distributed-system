@@ -41,7 +41,7 @@ void automatic(){
     avg.assign(8, duration<double>::zero());
     
     ofstream file("./results/sequential.csv");
-        file << "SIZE, READ, COUNT, TREE, MAP, ENCODE, ASCII, WRITE, COMPLETION" << endl;
+    file << "SIZE, READ, COUNT, TREE, MAP, ENCODE, ASCII, WRITE, COMPLETION" << endl;
     
     cout << "Start Measuring Sequential Implementation" << endl;
     for(string f : file_names){
@@ -74,13 +74,13 @@ void automatic(){
     // same but for multithread implementation, using incrementally more threads
     five_durations.clear();
     avg.assign(8, duration<double>::zero());
-    file.open("./results/multithreaded.csv");
     int num_threads = 1;
     int max_threads = thread::hardware_concurrency();
     cout << "Start Measuring Multithreaded Implementation" << endl;
-    while (num_threads <= max_threads){
+    while (num_threads <= max_threads) {
+        string res_file_name = "mt_" + to_string(num_threads) + "t" + ".csv";
+        file.open("./results/" + res_file_name);
         file << "SIZE, #THREADS, READ, COUNT, TREE, MAP, ENCODE, ASCII, WRITE, COMPLETION" << endl;
-
         for(string f : file_names){
             // compute the results five times
             for(int i = 0; i < 5; i++)
@@ -106,21 +106,22 @@ void automatic(){
             avg.assign(8, duration<double>::zero());
         }
 
+        file.close();
+
         num_threads *= 2; 
         file << endl;
     }
-    file.close();
     cout << "Completed Measuring Multithreaded Implementation" << endl;
 
     // same but for fastflow implementation, using incrementally more threads
     five_durations.clear();
     avg.assign(8, duration<double>::zero());
-    file.open("./results/fastflow.csv");
     num_threads = 1;
     cout << "Start Measuring Fastflow Implementation" << endl;
     while (num_threads <= max_threads){
+        string res_file_name = "ff_" + to_string(num_threads) + "t" + ".csv";
+        file.open("./results/" + res_file_name);
         file << "SIZE, #THREADS, READ, COUNT, TREE, MAP, ENCODE, ASCII, WRITE, COMPLETION" << endl;
-
         for(string f : file_names){
             // compute the results five times
             for(int i = 0; i < 5; i++)
@@ -146,10 +147,11 @@ void automatic(){
             avg.assign(8, duration<double>::zero());
         }
 
+        file.close();
+
         num_threads *= 2; 
         file << endl;
     }
-    file.close();
     cout << "Measuring Completed" << endl;
 }
 
