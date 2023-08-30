@@ -41,7 +41,7 @@ void automatic(){
     avg.assign(8, duration<double>::zero());
     
     ofstream file("./results/sequential.csv");
-    file << "file size, avg read time, avg count time, avg tree time, avg map time, avg encode time, avg ascii time, avg write time, avg start to finish time" << endl;
+        file << "SIZE, READ, COUNT, TREE, MAP, ENCODE, ASCII, WRITE, COMPLETION" << endl;
     
     cout << "Start Measuring Sequential Implementation" << endl;
     for(string f : file_names){
@@ -79,7 +79,7 @@ void automatic(){
     int max_threads = thread::hardware_concurrency();
     cout << "Start Measuring Multithreaded Implementation" << endl;
     while (num_threads <= max_threads){
-        file << "file size, #threads, avg read time, avg count time, avg tree time, avg map time, avg encode time, avg ascii time, avg write time, avg start to finish time" << endl;
+        file << "SIZE, #THREADS, READ, COUNT, TREE, MAP, ENCODE, ASCII, WRITE, COMPLETION" << endl;
 
         for(string f : file_names){
             // compute the results five times
@@ -119,7 +119,7 @@ void automatic(){
     num_threads = 1;
     cout << "Start Measuring Fastflow Implementation" << endl;
     while (num_threads <= max_threads){
-        file << "file size, #threads, avg read time, avg count time, avg tree time, avg map time, avg encode time, avg ascii time, avg write time, avg start to finish time" << endl;
+        file << "SIZE, #THREADS, READ, COUNT, TREE, MAP, ENCODE, ASCII, WRITE, COMPLETION" << endl;
 
         for(string f : file_names){
             // compute the results five times

@@ -19,10 +19,8 @@ vector<int> frequency_counters::sequential_counter(
     vector<int> char_frequancy = vector<int>(256, 0);
 
     // vector[char] -> frequency of char
-    for(int i = start; i < end; i++){
-        int char_index = static_cast<unsigned char>(s[i]);
-        char_frequancy[char_index]++;
-    }
+    for(int i = start; i < end; i++)
+        char_frequancy[static_cast<unsigned char>(s[i])]++;
 
     return char_frequancy;
 }
@@ -56,7 +54,7 @@ vector <int> frequency_counters::multithread_counter(const string &s, const int 
             }));
 
         start = end; 
-        end = end + chunk_size;
+        end += chunk_size;
     }
 
     // we merge the partial results into the frequency "map"
@@ -65,7 +63,7 @@ vector <int> frequency_counters::multithread_counter(const string &s, const int 
         threads[i].join();
 
         for(int k = 0; k < 256; k++)
-            char_frequancy[k] = char_frequancy[k] + partial_frequency[i][k];
+            char_frequancy[k] += partial_frequency[i][k];
     }
 
     return char_frequancy;
