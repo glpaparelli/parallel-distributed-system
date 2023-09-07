@@ -1,0 +1,168 @@
+{
+  "main": {
+    "id": "6c3d06f5cfa27d7b",
+    "type": "split",
+    "children": [
+      {
+        "id": "525d037d7e247730",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c23e9a6baeac9c4f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "pds-tldr.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "a3a8dce639dd6c1b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "questions.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "8cf0dfd78c59391c",
+    "type": "split",
+    "children": [
+      {
+        "id": "eaac43cae21f747f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2ec09b1342eace34",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "1df79bb1781d0134",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "8fb6ceff5af63d9d",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "right": {
+    "id": "ff97aa207b89da1a",
+    "type": "split",
+    "children": [
+      {
+        "id": "d6db0eb7ef79efc1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c614abf9d7dc0527",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "questions.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "5d9c80a00ec54cb0",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "questions.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "53e598cb93563cfb",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "46ab5df90a182f20",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "questions.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "a3a8dce639dd6c1b",
+  "lastOpenFiles": [
+    "pds-tldr.md",
+    "questions.md"
+  ]
+}

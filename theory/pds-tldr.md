@@ -6,7 +6,7 @@ This requires studying and developing parallel computing theory, practice and me
 **2) Because heterogeneous architecture are becoming important.** 
 Most processing elements have some kind of co-processor, e.g. GPUs which feature a large number of cores only usable for data parallel computations. 
 Parallel programming frameworks should be able to support these architectures in a seamless fashion.
-Other examples are FPGAs or even other architectures like clusters/networks of workstations (COW and NOW respectively).
+Other examples are FPGAs (Field Programmable Gate Arrays) or even other architectures like clusters/networks of workstations (COW and NOW respectively).
 
 **3) Because code reuse is paramount.** 
 Often we speak about problems which have already been treated, and sequential code already exists that solves those problems, or part of those. 
@@ -22,14 +22,14 @@ Mind that with **computing devices** is as we are talking about cores.
 A single core cpu is only capable of concurrency but a single cpu with 2 or more cores could run things in parallel, even if it is a single physical device.
 # Lecture 2 
 There is a dichotomy that we want to highlight first:
-- **Tool** (for parallel programming): for writing parallel code
+- **Tool** (for parallel programming): tool for writing parallel code
 	- **Threads**: smallest sequence of programmed instructions that can be managed independently by a scheduler. 
 	  Basically, a very low level tool to implement parallel programs. 
 	  Being a basic tool, most of the things must be handled manually, for example we must be careful about shared variables.
 	- **OpenMP**: standard to insert annotations in C/C++ programs to tell the system that something has to happen in parallel. 
 	- **Other ways**: Pipelines (where each stage can be one in parallel with others), ...
 - **Libraries**: already contains parallel code
-	- **OpenCV**: library to process video/images. Some operations (e.g. blur) can be done in parallel, since the image can be split in sections, operate on those sections and re-compose the result.
+	- **OpenCV**: library to process videos/images. Some operations (e.g. blur) can be done in parallel, since the image can be split in sections, operate on those sections and re-compose the result.
 
 Another dichotomy is in:
 - **System programmers**: create the tools for the application programmers. 
@@ -41,7 +41,7 @@ Another dichotomy is in:
 Say that we want to translate a book from English to Italian. 
 Let's assume that the book has $m$ pages and we spend a given amount of time $t_{page} = 1\ \text{hour}$ to translate a single page. 
 The overall task will require something close to $m$ hours to complete.
-We can say that the **sequential** translation of a book will take is $T_{seq} = m * t_{page}$ 
+We can say that the **sequential** translation of a book will take $T_{seq} = m * t_{page}$ 
 
 What if a team of helpers is available? We can imagine a much more efficient procedure exploiting $n$ helpers:
 - we divide the book in $n$ parts
@@ -117,18 +117,22 @@ For example, **latency** may be more important for **real-time systems** where r
 
 ![[Pasted image 20230622162334.png | center]]
 In this example, we have m inputs to feed to k stages (aka functions to be computed) of a stateless pipeline (so it does not keep memory across the stages).
-In this case, the latency is: $L = \sum t_i$.
+In this case, the latency of the whole pipeline is: $L = \sum t_i$, as the latency is the defined as the time between the input reception and the output production. 
+The completion time is given by the overall latency times the number of inputs in the input data set.
 
 In this example, we can improve the completion time: stages in a pipeline can be computed in parallel. 
 Example with 3 stages:
 ![[Pasted image 20230622163542.png | center]]
+
 The completion time will then depend both by the number of stages and the completion time of the slowest of all the stages: $$T_C = \sum t_i + max\{t_i\}(m-1)$$While the service time will be: $$T_S = max\{t_i\}$$
+This is an improvement because we pay the latency of each stage once, as they work in parallel the latency is amortized. Adding the time needed by the longest state $max\{t_i\}$ executing on the last input $m-1$ is the time that hides the other stages.
 ### If a Stage is Particularly Slow?
 In the example with 3 stages, the problem is the second stage. 
 Can we do something to address it? We can think of creating **multiple instances** for the second stage. For example, assuming that this second stage is 5 times slower than the other 2, we could do something like:
 ![[Pasted image 20230622164639.png | center ]]
 
 Let's better explain why we have chosen 5 by introducing an additional measure.
+
 The **inter-arrival time** ($T_A$) is the time between each input arrival into the system.
 In this example, $T_A = t_1 = 1$ (an input arrives every 1 unit of time)
 
@@ -176,6 +180,11 @@ We use those processing elements to parallelize the $(1 - f)$ part of the progra
 
 Hence the best hypothetical solution is that the $(1 − f)T_S$ execution time can scaled down to: $$\frac{(1-f) T_S}{n}$$Therefore the speedup we can achieve with our application is: $$speedup(n) = \frac{T_{Seq}}{T_{Par}} = \frac{T_S}{f \ T_S \ + \ (1-f)\frac{T_S}{n}} = \frac{T_S}{T_S(f + \frac{1-f}{n})} =\frac{1}{f + \frac{(1-f)}{n}}$$Assuming to have infinite processing resources $n$ available, the term $\frac{(1-f)}{n}$ clearly goes to 0, and the speedup becomes: $$\lim_{n \rightarrow \infty} sp(n) = \frac{1}{f}$$Therefore, even with infinite processing resources, the speedup is limited by $1/f$, $\square$ 
 ## Gustafsson Law
+We use the same notation as before: 
+- $n$ is the number of workers
+- $f$ is the amount of non parallelizable work 
+- $1-f$ is the parallelizable work
+
 Gustaffsson found that the speedup of a program gained by using parallel computing is 
 $$sp(n) = f + n\cdot(1-f) = f + n - nf = n - f(n-1)$$
 Gustafson's law addresses the shortcomings of Amdahl's law, which is based on the assumption of a **fixed problem size**, that is of an execution workload that does not change with respect to the improvement of the resources.
