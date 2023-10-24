@@ -3,7 +3,6 @@
 #include <string>
 #include <thread>
 #include <cstring>
-#include <jemalloc/jemalloc.h>
 #include <ff/ff.hpp>
 #include <ff/parallel_for.hpp>
 
@@ -89,7 +88,8 @@ string huffman_encodings::fastflow_string_to_binary(
             // merging step
             s_encoded += partial;
         },
-        num_workers);
+        num_workers
+    );
 
     return s_encoded;
 }

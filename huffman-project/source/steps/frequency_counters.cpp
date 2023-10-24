@@ -26,12 +26,6 @@ vector<int> frequency_counters::sequential_counter(
 }
 
 vector <int> frequency_counters::multithread_counter(const string &s, const int num_threads) {
-    /**
-     * we use je_malloc to allocate memory for each chunk of the text. 
-     * this ensures that each thread has its own memory space to work with, 
-     * reducing the contention for accessing the heap and improving performance.
-    */
-
     vector<vector<int>> partial_frequency(num_threads);
 
     // static load balancing: the task are equally complex and distributed

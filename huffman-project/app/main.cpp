@@ -180,6 +180,7 @@ void interactive(){
 
     switch(imp) {
         case 1: 
+            cout << "file name: " << file_name << endl;
             results = huffman::sequential_huffman(file_name);
             break; 
         case 2: 

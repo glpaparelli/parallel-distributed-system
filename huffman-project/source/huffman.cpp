@@ -25,7 +25,6 @@ vector<duration<double>> huffman::sequential_huffman(const string file_name){
     // STEP 1: read the characters
     auto step_start = high_resolution_clock::now();
     string file_content = io_handling::read(input_file);
-    
     auto step_end = high_resolution_clock::now();
     durations.push_back(step_end - step_start);
     
