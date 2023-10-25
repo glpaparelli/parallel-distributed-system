@@ -155,7 +155,7 @@ vector<duration<double>> huffman::fastflow_huffman(
 ){
     vector<duration<double>> durations; 
     string input_file  = "./data/input/" + file_name;
-    string output_file = "./data/output/ff_" + to_string(num_threads) + "t_" + file_name + ".txt";
+    string output_file = "./data/output/ff_" + to_string(num_threads) + "t_" + file_name;
 
     auto start = high_resolution_clock::now();
 

@@ -32,7 +32,7 @@ void print_timings(vector<duration<double>> results){
 
 // for each implementation compute the average timings aand write them in a csv file
 void automatic(){
-    vector<string> file_names = {"1MB.txt", "5MB.txt", "10MB.txt", "50MB.txt", "100MB.txt"};
+    vector<string> file_names = {"1MB.txt", "5MB.txt", "10MB.txt", "50MB.txt", "100MB.txt", "300MB.txt"};
 
     // computing the timings for the sequential implementaton
     // for each file size we execute the algorithm 5 times and take the average

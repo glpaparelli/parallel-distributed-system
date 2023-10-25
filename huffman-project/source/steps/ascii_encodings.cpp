@@ -10,8 +10,10 @@
 
 using namespace std; 
 
-string ascii_encodings::sequential_binary_to_ASCII(const string &s, const int start, const int end) {
-    string s_encoded = "";
+string ascii_encodings::sequential_binary_to_ASCII(const string &s, const int start, const int end) {        
+    string s_encoded; 
+    s_encoded.reserve(s.length()/8);
+
     for (int i = start; i < end; i += 8){
         bitset<8> bits(s.substr(i, 8));
         s_encoded += char(bits.to_ulong());
@@ -46,9 +48,16 @@ string ascii_encodings::multithread_binary_to_ASCII(const string &s, const int n
     }
 
     // Merge the results computed by the threads
-    string s_encoded = "";
+    unsigned int size = 0;
     for(int i = 0; i < num_threads; i++){
         threads[i].join();
+        size += chunks_in_ascii[i].length();
+    }
+
+    string s_encoded;
+    s_encoded.reserve(size);
+    unsigned int i_insert = 0; 
+    for(int i = 0; i < chunks_in_ascii.size(); i++){
         s_encoded += chunks_in_ascii[i];
     }
 
@@ -78,11 +87,17 @@ string ascii_encodings::fastflow_binary_to_ASCII(const string &s, const int num_
             chunks_in_ascii[i] = sequential_binary_to_ASCII(s, start, end);
         }
     );
-
-    // Merging phase
-    string s_encoded = "";
-    for (int i = 0; i < num_threads; i++)
+   
+    // Merge the results computed by the threads
+    unsigned int size = 0;
+    for(int i = 0; i < num_threads; i++)
+        size += chunks_in_ascii[i].length();
+    
+    string s_encoded;
+    s_encoded.reserve(size);
+    unsigned int i_insert = 0; 
+    for(int i = 0; i < chunks_in_ascii.size(); i++)
         s_encoded += chunks_in_ascii[i];
-
+    
     return s_encoded;
 }

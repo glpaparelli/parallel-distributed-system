@@ -16,8 +16,13 @@ string huffman_encodings::sequential_string_to_binary(
     const int end, 
     const vector<string> &huffman_map)
 {
-    string s_encoded = "";
- 
+    unsigned long size = 0; 
+    for(int i = start; i < end; i++)
+        size += huffman_map[static_cast<unsigned char>(s[i])].length();
+    
+    string s_encoded; 
+    s_encoded.reserve(size);
+
     for(int i = start; i < end; i++)
         s_encoded += huffman_map[static_cast<unsigned char>(s[i])];
     
@@ -50,9 +55,17 @@ string huffman_encodings::multithread_string_to_binary(
         end += chunk_size;
     }
 
-    string s_encoded = "";
+    // SMART MERGE (using preallocation)
+    unsigned int size = 0;
     for(int i = 0; i < num_threads; i++){
         threads[i].join();
+        size += chunks_encoded[i].length();
+    }
+
+    string s_encoded;
+    s_encoded.reserve(size);
+    unsigned int i_insert = 0; 
+    for(int i = 0; i < chunks_encoded.size(); i++){
         s_encoded += chunks_encoded[i];
     }
 

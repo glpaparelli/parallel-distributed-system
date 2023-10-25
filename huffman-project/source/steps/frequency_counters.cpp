@@ -15,7 +15,7 @@ vector<int> frequency_counters::sequential_counter(
     const int start, 
     const int end)
 {
-    // Vector of size 256 (as much as ASCII chars) inizialized with 0
+    // vector of size 256 (as much as ASCII chars) inizialized with 0
     vector<int> char_frequancy = vector<int>(256, 0);
 
     // vector[char] -> frequency of char
