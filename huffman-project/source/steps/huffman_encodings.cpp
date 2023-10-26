@@ -77,8 +77,15 @@ string huffman_encodings::fastflow_string_to_binary(
     const int num_workers,
     const vector<string> huffman_map)
 {
-    string s_encoded = "";
+    // not worth
+    // unsigned long size = 0; 
+    // for(int i = 0; i < s.length(); i++)
+    //     size += huffman_map[static_cast<unsigned char>(s[i])].length();
+    
+    // string s_encoded; 
+    // s_encoded.reserve(size);
 
+    string s_encoded = ""; 
     ff::ParallelForReduce<string> ffForReduce(num_workers);
 
     // parallel_reduce_static divides the range of elements into fixed-size chunks
@@ -107,7 +114,6 @@ string huffman_encodings::fastflow_string_to_binary(
     return s_encoded;
 }
 
-
 void huffman_encodings::add_padding(string &s){
     // ASCII characters are 8 bits, hence the length of 
     // the original input s is a multiple of 8. 
@@ -115,6 +121,6 @@ void huffman_encodings::add_padding(string &s){
     // characters have a shorter representation based on their
     // frequence in the s. 
     // hence we have to add a padding to the encoded s
-    int padding = 8 - (s.size() % 8);
+    int padding = s.size() % 8;
     s += string(padding, '0');
 }
