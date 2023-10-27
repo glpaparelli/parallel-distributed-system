@@ -142,6 +142,16 @@
                 "file": "questions.md"
               }
             }
+          },
+          {
+            "id": "3b2ac206c95b3746",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency"
+              }
+            }
           }
         ]
       }

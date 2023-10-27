@@ -4,16 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "88028d3b77bd0460",
+        "id": "9066363f4696a25f",
         "type": "tabs",
         "children": [
           {
-            "id": "174e781eba6cb25c",
+            "id": "64f55d532b63de31",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Report.md",
+                "file": "report.md",
                 "mode": "source",
                 "source": false
               }
@@ -69,8 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 285.5040512084961,
-    "collapsed": true
+    "width": 224.5040512084961
   },
   "right": {
     "id": "0d4b3e19b248426d",
@@ -86,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Report.md",
+                "file": "report.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Report.md",
+                "file": "report.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -126,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Report.md"
+                "file": "report.md"
               }
             }
           }
@@ -147,15 +146,22 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "174e781eba6cb25c",
+  "active": "64f55d532b63de31",
   "lastOpenFiles": [
-    "imgs/sequential-timings.png",
-    "Report.md",
+    "Pasted image 20231027144607.png",
+    "imgs/speedup.png",
+    "imgs/mt-vs-mt.png",
+    "imgs/seq-vs-64t.png",
+    "imgs/seq-vs-1t.png",
+    "imgs/sequential.png",
+    "report.md",
+    "seq-mt1t-ff1t.png.md",
     "imgs/seq_mt4_mt16_mt64.png",
-    "imgs/Screenshot from 2023-08-30 18-32-48.png",
-    "imgs/seq-mt64-ff64.png",
     "imgs/seq-mt1t-ff1t.png",
-    "Screenshot from 2023-08-30 18-02-14.png",
+    "imgs/sequential-timings.png",
+    "imgs/seq-mt64-ff64.png",
+    "Report.md",
+    "imgs/Screenshot from 2023-08-30 18-32-48.png",
     "imgs"
   ]
 }
