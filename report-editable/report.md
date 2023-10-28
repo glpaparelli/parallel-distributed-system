@@ -66,8 +66,8 @@ The project has the following structure:
 - **app:** folder of the file `main.cpp`, which produce the executable application
 - **data:** folder of the input and output files
 	- **input:** folder where are stored the input files that the code uses
-		- `generator.py`: a python script that creates a file of given size of randomly chosen ASCII character
-		- `input_files_generator.sh`: a bash script that calls `generator.py` 5 times, creating in the input folder 5 files of different dimensions (1, 5, 10, 50, 100 Megabytes) which are used for measuring the performance
+		- `ascii_at_random.py`: a python script that creates a file of given size of randomly chosen ASCII character
+		- `input_files_generator.sh`: a bash script that calls `generator.py` 6 times, creating in the input folder 6 files of different dimensions (1, 5, 10, 50, 100, 300 Megabytes) which are used for measuring the performance
 	- **output:** folder where the encoded strings are written into output files
 - **source:** folder of implementations
 	- **headers:** folder of headers 
@@ -112,8 +112,8 @@ Considering that the speedup we obtained is very low, maybe not even enough to j
 #### Vector of Vector of Pointers 
 In this scenario we wanted to avoid the onerous concatenation of strings that happens in the **ENCODE** phase, avoiding to rewrite strings that were already on memory. 
 
-To do we modified the Huffman Map to be a map $\text{character} -> \text{string*}$ that goes from character to string
-```cpp
+To do so we modified the Huffman Map to be a map $\text{character} -> \text{string*}$ that goes from character to string pointers
+```
 map<char, string*> huffman_map;
 // ...
 // the node is a leaf, store its character and code in the map.
@@ -121,9 +121,9 @@ if (node->left == nullptr && node->right == nullptr)
 	huffman_map.insert(make_pair(node->character, new string(code)));
 ```
 
-Then we modified the sequential implementation of ENCODE so it would produce a vector of pointers to strings. 
+Then we modified the sequential implementation of **ENCODE** so it would produce a vector of pointers to strings. 
 Each element $i$ of the vector would represent the $i-th$ char of the input string, and would point to the corresponding Huffman code of that character
-```cpp
+```
 vector<string*> huffman_encodings::sequential_string_to_binary(...){
 	// ...
 	vector<string*> s_encoded;
@@ -136,8 +136,8 @@ vector<string*> huffman_encodings::sequential_string_to_binary(...){
 }
 ```
 
-This lead to the new multi-threading implementation of the ENCODE phase, which produces a vector of vector of strings*: 
-```cpp
+This lead to the new multi-threading implementation of the **ENCODE** phase, which produces a vector of vector of strings*: 
+```
 vector<vector<string*>> huffman_encodings::multithread_string_to_binary(...){
 	// ...
 	vector<vector<string*>> c_enc(num_threads);
@@ -166,7 +166,7 @@ If we do not concatenate the partial results in the **ENCODE** step we remain wi
 To properly encode each binary chunk $c_i$ in **ASCII** it would be necessary that $c_i\ \text{mod}\ 8 = 0$.  
 
 To do so we tried to add to a chunk $c_i$ a tail padding by taking the missing bits from the chunk $c_{i+1}$. 
-```cpp
+```
 for(int i = 0; i < chunks.size() -1; i++){
 	string current = chunks[i];
 	string next = chunks[i+1];
@@ -189,11 +189,11 @@ Specifically we identified some challenges that this techniques carries:
 #### Bitwise Concatenation
 Another way to increase the performance of the **ENCODE** and **ASCII** would be to see Huffman Codes not as `strings` but as `unsigned char`, which is represented with exactly $8$ bits. 
 
-It would be possible to modify the Huffman Map to map each character $c$ with a struct made of the `unsigned char` representing the code, and a number `significant_bits` used to store the "length" of the actual code. 
+It would be possible to modify the Huffman Map to map each character $c$ with a struct made of the `unsigned char` representing the code, and a number `size` used to store the "length" of the actual code. 
 
 In this way it would be possible to have a `vector<char>` representing the binary string encoded as an ASCII string ready to be written in the output file. 
 
-The algorithm is constructed with an idea taken from the problem Sliding Window Maximum. 
+The algorithm is constructed with an idea inspired from the problem Sliding Window Maximum. 
 We start with an empty `char`, which is our window/buffer `buff`. 
 Then we start going through the file, checking each character $c_i$.
 - if $c_i$ has Huffman Code of length $8$, i.e. `hc.size` = 8, $c_i$ is a complete window, we add it to the vector as it is ready to be written in the output file
@@ -203,7 +203,7 @@ Then we start going through the file, checking each character $c_i$.
 	- after the push we reset the window and concatenate it with the remaining bits of $h(c_i)$
 
 The following snippet is the fully implemented solution in cpp: 
-```cpp
+```
 void encode_ascii_write() {
 	// chars ready to be written in the output file
 	vector<unsigned char> encoded;
@@ -270,6 +270,6 @@ void encode_ascii_write() {
 }
 ```
 
-This solution is the most promising and has the best performance when executed sequentially as it basically merge the phases **ENCODE**, **ASCII** and **WRITE** in one, and the concatenation is much less onerous. 
-
-However, we decided to not purse further this solution as it would be very challenging to parallelize, which may even be not beneficial to performance as it would require synchronization.  
+This solution has the best performance when executed sequentially as it basically merge the phases **ENCODE**, **ASCII** and **WRITE** in one, and the concatenation is much less onerous. 
+This is also the most promising way we have found to drastically increment the speedup in the parallel versions.
+However, we decided to not purse further this solution as it would be very challenging to parallelize and it would make the code more complex to read and fix. 
