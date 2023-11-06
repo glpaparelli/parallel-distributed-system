@@ -18,7 +18,7 @@ We can imagine different flows of control (sequences of instruction) that all to
 **Note that more flows on a singe computing device is concurrency, not parallelism.**
 **Concurrency:** things that may happen in parallel with respect to the ordering between elements, given more flows of control any schedule of these flows can be executed with interleaving.
 
-Mind that with **computing devices** is as we are talking about cores. 
+Mind that with **computing devices** we actually mean cores. 
 A single core cpu is only capable of concurrency but a single cpu with 2 or more cores could run things in parallel, even if it is a single physical device.
 # Lecture 2 
 There is a dichotomy that we want to highlight first:
@@ -36,7 +36,7 @@ Another dichotomy is in:
   The OpenCV devs are an example of them. The focus of the course is being system programmers.
 - **Application programmers**: experts of a given application domain (AI, video processing, compression...), and usually want to have libraries that provides abstractions close to their way of thinking. They don't feel the need to understand what's going on inside nor how to exploit the resources of the machine they are using.
 ## Parallel Computing
-**Parallel computing is the practice of identifying and exposing parallelism in our software**, while understanding the cost, benefits and limitations of the tools of the chosen implementation
+**Parallel computing is the practice of identifying and exposing parallelism in our software, while understanding the cost, benefits and limitations of the tools of the chosen implementation**
 ### Example: Book Translation
 Say that we want to translate a book from English to Italian. 
 Let's assume that the book has $m$ pages and we spend a given amount of time $t_{page} = 1\ \text{hour}$ to translate a single page. 
@@ -59,12 +59,12 @@ But we need to take into account some additional activities that concur to the o
 - give a part to every single helper
 - after the translation we need to put together the book 
 
-The amount of time needed by the three previous task is clearly proportional to the number of helpers and the size of our book does not impact much. 
-In general we may assume that the time needed to create a part $t_{split}$ and the time needed to put back in the right place the translated part $t_{merge}$ are smaller than the time needed to translate a page.
+The amount of time needed by the three previous tasks is clearly proportional to the number of helpers and the size of our book does not impact much. 
+In general we may assume that the time needed to create a part is $t_{split}$ and the time needed to put back in the right place the translated part is $t_{merge}$ and those are smaller than the time needed to translate a page.
 
 However we need to take into account that our parallel procedure to translate a book takes a time $T_{par} = n * t_{split} + (m/n * t_{page}) + n * t_{merge}$
 
-We assumed that $t_{split},\ t_{merge} << t_{page}$, therefore the gain in time due to the fact that $T_{seq} = m * t_{page}$ is divided by n and will not be impaired by the fact that we spent an additional time coordinate the work of the helpers. 
+We assumed that $t_{split},\ t_{merge} << t_{page}$, therefore the gain in time is due to the fact that $T_{seq} = m * t_{page}$ is divided by n and will not be impaired by the fact that we spent an additional time to coordinate the work of the helpers. 
 However the time spent to coordinate the helpers is pure **overhead** with respect to sequential execution. 
 
 We can now define the **speedup**, which is the **ratio between the sequential time and the parallel time**:
@@ -81,7 +81,6 @@ Another important measure is **scalability**, that tells us how suitable a parti
 $$
 scalability = \frac{\text{parallel time with 1 computing device}}{\text{parallel time}} 
 $$
-
 **Summary:**
 - $T_{seq}$ vs $T_{par}$
 - **overhead**: in order to set up parallel execution of a task, a given amount of overhead is introduced that adds execution time to the time needed to execute the task sequentially;
@@ -92,7 +91,6 @@ $$
 	- logical limitations (limitations depending on the specific instance of the problem);
 	- if overhead to parallelize is too high, there is no benefit in parallelizing;
 	- after a certain amount of workers, the time will not decrease anymore (as the total overhead becomes too high);
-
 ## Lab: Work with Remote Machines
 https://classroom.google.com/c/NTgzNzY4MzU1NjI5/m/NTk3MzUxNjMwMTc0/details
 # Lecture 3
@@ -102,44 +100,43 @@ Indicators measuring **absolute time** spent in the execution of a given (part o
 - **Completion time ($T_C$)**: the overall latency of an application computed on a given input data set: the time spent from application start to application completion;
 
 Indicators measuring the **throughput** of the application (i.e. rate achieved in the delivering of the results):
-- **Service time ($T_S$)** (aka throughput) the time between the delivery of two successive output items (or alternatively, the time between the acceptance of two consecutive input items);
+- **Service time ($T_S$)** (aka **throughput**) the time between the delivery of two successive output items (or alternatively, the time between the acceptance of two consecutive input items);
 - **Bandwidth ($B$)**: the inverse of the service time.
 ## Derived performance indicators
 - **Speedup**: the ratio between the best known sequential execution time (on the target architecture at hand) and the parallel execution time. 
   Speedup is a function of $n$, which is the parallelism degree of the parallel execution. $$speedup(n) = \frac{T_{seq}}{T_{par}(n)}$$
 - **Scalability**: the ratio between the parallel execution time with parallelism degree equal to 1 and the parallel execution time with parallelism degree equal to n. 
-  Note that scalability tends to grow faster than speedup. $$scalab(n) = \frac{T_{par}(1)}{T_{par}(n)}$$
+  Note that scalability tends to grow faster than speedup. $$scalability(n) = \frac{T_{par}(1)}{T_{par}(n)}$$
 - **Efficiency**: ratio between the ideal execution time (i.e. $T_{seq} / n$) and actual parallel execution time. It is useful to identify the optimal number of processors to use for a given task. $$efficiency(n) = \frac{\text{ideal parallel time (n)}}{T_{par}(n)} = \frac{\frac{T_{seq}}{n}}{T_{par}(n)} = \frac{T_{seq}}{n\cdot T_{par}(n)} = \frac{1}{n}speedup(n)$$
 It is important to note that different metrics may be more appropriate for different types of parallel systems and different types of tasks. 
-For example, **latency** may be more important for **real-time systems** where responsiveness is critical, while **efficiency** may be more important for **high-performance** computing systems where maximizing throughput is the primary goal.
-
+For example, latency may be more important for real-time systems where responsiveness is critical, while efficiency may be more important for high-performance computing systems where maximizing throughput is the primary goal.
 ## Parallelising Stages in a Pipeline
 
 ![[Pasted image 20230622162334.png | center]]
-In this example, we have m inputs to feed to k stages (aka functions to be computed) of a stateless pipeline (so it does not keep memory across the stages).
+In this example, we have $m$ inputs to feed to $k$ stages (aka functions to be computed) of a stateless pipeline (so it does not keep memory across the stages).
 In this case, the latency of the whole pipeline is: $L = \sum t_i$, as the latency is the defined as the time between the input reception and the output production. 
-The completion time is given by the overall latency times the number of inputs in the input data set.
+The completion time is given by the overall latency times.
 
 In this example, we can improve the completion time: stages in a pipeline can be computed in parallel. 
 Example with 3 stages:
 ![[Pasted image 20230622163542.png | center]]
-
-The completion time will then depend both by the number of stages and the completion time of the slowest of all the stages: $$T_C = \sum t_i + max\{t_i\}(m-1)$$While the service time will be: $$T_S = max\{t_i\}$$
-This is an improvement because we pay the latency of each stage once, as they work in parallel the latency is amortized. Adding the time needed by the longest state $max\{t_i\}$ executing on the last input $m-1$ is the time that hides the other stages.
+The completion time will then depend both by the number of stages and the completion time of the slowest of all the stages: $$T_C = \sum t_i + max\{t_i\}(m-1)$$While the service time will be: $$T_S = max\{t_i\}$$This is an improvement because we pay the latency of each stage once, as they work in parallel the latency is amortized. 
+Adding the time needed by the longest state $max\{t_i\}$ executing on the last input $m-1$ is the time that hides the other stages.
 ### If a Stage is Particularly Slow?
 In the example with 3 stages, the problem is the second stage. 
-Can we do something to address it? We can think of creating **multiple instances** for the second stage. For example, assuming that this second stage is 5 times slower than the other 2, we could do something like:
+**We can increment the performance by creating multiple instances for the second stage.** 
+For example, assuming that this second stage is $5$ times slower than the other $2$, we could do something like:
 ![[Pasted image 20230622164639.png | center ]]
 
-Let's better explain why we have chosen 5 by introducing an additional measure.
+We have created $5$ instances of the second stage of the pipeline.
+Let's better explain why we have chosen $5$ by introducing an additional measure.
 
 The **inter-arrival time** ($T_A$) is the time between each input arrival into the system.
-In this example, $T_A = t_1 = 1$ (an input arrives every 1 unit of time)
+In this example, $T_A = t_1 = 1$, an input arrives every $1$ unit of time
 
 Consider that each stage has a queue that contains the elements waiting to enter in the stage. 
-We can then compute the **utilization factor** of a queue: $$\rho = \frac{T_S}{T_A}$$In this case, the utilization factor of the queue of the 2nd stage is exactly 5.
+We can then compute the **utilization factor** of a queue: $$\rho = \frac{\text{Service Time}}{\text{Inter-Arrival Time}} =\ \frac{T_S}{T_A}$$In this case, the utilization factor of the queue of the 2nd stage is exactly $5$.
 $$\rho_{stage_2} = \frac{T_S}{T_A} = \frac{5}{1} = 5$$
-
 The idea can be further extended, by parallelizing stages differently depending on how much time they require.
 
 Remember, in this example we didn't take into consideration that maybe a particular stage could be sped up by parallelizing it internally.
@@ -179,7 +176,7 @@ Say that we have $n$ processing elements.
 We use those processing elements to parallelize the $(1 - f)$ part of the program that can actually be parallelized.
 
 Hence the best hypothetical solution is that the $(1 − f)T_S$ execution time can scaled down to: $$\frac{(1-f) T_S}{n}$$Therefore the speedup we can achieve with our application is: $$speedup(n) = \frac{T_{Seq}}{T_{Par}} = \frac{T_S}{f \ T_S \ + \ (1-f)\frac{T_S}{n}} = \frac{T_S}{T_S(f + \frac{1-f}{n})} =\frac{1}{f + \frac{(1-f)}{n}}$$Assuming to have infinite processing resources $n$ available, the term $\frac{(1-f)}{n}$ clearly goes to 0, and the speedup becomes: $$\lim_{n \rightarrow \infty} sp(n) = \frac{1}{f}$$Therefore, even with infinite processing resources, the speedup is limited by $1/f$, $\square$ 
-## Gustafsson Law
+## Gustafsson's Law
 We use the same notation as before: 
 - $n$ is the number of workers
 - $f$ is the amount of non parallelizable work 
@@ -196,10 +193,10 @@ This provides additional opportunities to exploit parallelism.
 **PEs** stands for **P**rocessing **E**lements. 
 In the picture, we can see how Amdahl thinks in term of fixed size problem that can be sped up if we increase the number of workers, while Gustaffson thinks in term of how much more data we can compute in the same time by adding more workers. 
 
-**It shows more generally that the serial fraction does not theoretically limit parallel speed enhancement, if the problem or workload scales in its parallel component.**
+**It shows more generally that the serial fraction of the program does not theoretically limit parallel speed enhancement if the problem or workload scales in its parallel components.**
 
 **Said easy:** Amdahl's Law limits the speedup because the size of the data that is used by the parallel part of the program remains constant. 
-And the picture shows with more and more computing unit we will have that the time will be dominated by the serial part. 
+The picture shows that with more and more computing unit we will have that execution time will be dominated by the serial part. 
 Instead with Gustaffson we see how we can exploit parallelism to increase the size of the data (compute more stuff). 
 ## Work-Span Model
 - **Component**: a part of our application that cannot be parallelized;
@@ -207,13 +204,13 @@ Instead with Gustaffson we see how we can exploit parallelism to increase the si
 - **Application Graph (C, D)**: a graph consisting of **C**omponents (nodes) and **D**ependencies (edges); ![[Pasted image 20230623152449.png|center |150]]
 - <u>work</u>: the amount of work (e.g. time) required to execute the whole application
 - <u>span</u>: total amount of work (e.g. time) to be spent executing the longest chain of components. 
-   Note that the “longest” chain has to be intended with respect to the target measure taken into account;
+   Note that the “longest” chain has to be intended with respect to the target measure taken into account, in this case is time;
 
 **To execute the application in parallel we need to at least the time needed for the span.**
 This is because the longest chain must be computed and while it is computed we assume that we can do the rest in a time $\leq$ the time needed for the span.
+This is clear as the nodes are to be executed sequentially and the chain is a series of sequential task where the $i+1-th$ task need the output of the task $i$ to be computed. 
 In the work-span model, the time spent computing the span chain is called $T_\infty$, because even if you have infinite resources you cannot go better than the span chain. 
-In symbols: $$T_{Par} = T_\infty$$
-On the other side, the time spent to compute the whole application with just a single processing element is clearly the time spend to compute the <u>work</u>, denoted as $T_1$, hence 
+In symbols: $$T_{Par} = T_\infty$$On the other side, the time spent to compute the whole application with just a single processing element is clearly the time spend to compute the <u>work</u>, denoted as $T_1$, hence 
 $$T_{Seq}= T_1$$
 The work-span model observes that the maximum speedup we may achieve is nothing but: $$speedup(\infty) = \frac{T_1}{T_\infty}$$
 # Lecture 4 - 8: C++ 101 and Parallel Patterns
@@ -239,20 +236,20 @@ SIMD instructions allow for **parallel execution** of the same operation on mult
 For example, in a matrix-vector product, the instructions involving independent elements of the vector can be executed in parallel using SIMD instructions.
 
 Many CPUs have "**vector**" or "**SIMD**" instruction sets which apply the same operation simultaneously to two, four, or more pieces of data. 
-"Vectorization" is the process of rewriting a loop so that instead of processing a single element of an array N times, it processes (say) 4 elements of the array simultaneously N/4 times.
+**"Vectorization" is the process of rewriting a loop so that instead of processing a single element of an array N times the CPU processes (say) 4 elements of the array simultaneously N/4 times.**
 
 There are two ways to vectorize a program:
 - **Manual vectorization**: explicitly writing vector instructions in the code using intrinsic or other language-specific constructs;
 - **Auto vectorization**: performed by the compiler itself, which automatically identifies **loops** in the code that can be **parallelized** and **transformed** into **vector operations**. 
   It then arranges the instructions to be executed in a vectorized manner, operating on multiple data items at once. 
   
-To be vectorized the loops must satisfy the following requirements:
-- **number of iteration:** the number of iteration has to be known 
+**To be vectorized the loops must satisfy the following requirements:**
+1) **number of iteration:** the number of iteration has to be known 
 	  - `for` loops can be vectorized
 	  - `while(c<k)` may not be vectorized
-- **can't call external code in the loop body:** no functions or libraries invocation
-- **no conditional code:** conditional code would require to vectorize the two branches, complicating things
-- **no overlapping pointers**
+2) **can't call external code in the loop body:** no functions or libraries invocation
+3) **no conditional code:** conditional code would require to vectorize the two branches, complicating things
+4) **no overlapping pointers**
 ## High-level Parallel Patterns
 Here we se parallel patterns for 
 - **stream parallelism**
@@ -286,31 +283,29 @@ Given a **function** $\oplus$ and a **vector** $x$, the reduce pattern computes 
 Note that in the most general form, the function $\oplus$ passed to the reduce skeleton is assumed to be both **associative** and **commutative**. 
 
 The parallel semantics of the reduce pattern ensures that the **reduction** is performed in **parallel**, using $n$ agents organized in a **tree**. 
-Each agent computes $\oplus$ over the results communicated by the son agents. 
+Each agent computes the reduction $\oplus$ over the results communicated by the son agents. 
 The root agent delivers the reduce result. 
 Leaf agents possibly compute locally a reduce over the assigned partition of the vector.
 ![[Pasted image 20230717180501.png | center]]
 
 #### Prefix
-Given a **function** $\oplus$ and a **vector** $x$, the reduce pattern computes a **vector** $y$ whose elements are:
+Given a **function** $\oplus$ and a **vector** $x$, the prefix pattern computes a **vector** $y$ whose elements are:
 $$x_1, \ x_1 \oplus x_2, \ x_1 \oplus x_2 \oplus x_3, \ \dots, \ x_1 \oplus \dots \oplus x_n $$I.e. the "*partial sums*" of the vector.
 
-The parallel semantics of the prefix pattern ensures that the parallel **prefix** is computed in **parallel** by n agents with a schema similar to the one followed to compute the reduce. Partial results are logically written to the proper locations in the resulting vector by intermediate nodes.
+The parallel semantics of the prefix pattern ensures that **prefix** is computed in **parallel** by $n$ agents with a schema similar to the one followed to compute the reduce. 
+Partial results are logically written to the proper locations in the resulting vector by intermediate nodes.
 ![[Pasted image 20230717180506.png | center]]
-
 #### Stencil
 This pattern computes the new item in a data structure as a function of the old item and of the neighboring items.
 ![[Pasted image 20230717180129.png | center]]
 
 The parallel semantics of the stencil pattern ensures that every $x^{t+1}$ is computed in **parallel**.
-
 #### Divide&Conquer
 This pattern recursively divides a problem into sub-problems. 
 Once a given “**base**” case problem has been reached it is solved directly. 
 Eventually, all the solved sub-problems are recursively used to build the final result computed by the pattern.
 
 The parallel semantics of the Divide&Conquer pattern ensures that the computation of **sub-problems** deriving from the “divide” phase are computed in **parallel**.
-
 # Lecture 9
 ## Google MapReduce
 **MapReduce is a programming model and an associated implementation for processing and generating large data sets.**
@@ -327,7 +322,7 @@ As such, a single-threaded implementation of MapReduce is usually not faster tha
 - `shuffle`: collects all pairs with the same key and groups them together, creating one group for each key. 
   **Hashing** techniques are typically used for the grouping, which can be performed in parallel.  
   **The items grouped together are then sent to the same reducer** (to the same machine, using hashing to determine which), to exploit the *locality principle*. 
-  This is the key point of MapReduce, to make the task embarrassingly parallel; ![[Pasted image 20230623172358.png | center]]
+  This is the key point of MapReduce which make the task heavily parallel; ![[Pasted image 20230623172358.png | center]]
 - `reduce` ($\oplus$): reduce is now applied to collapse all the pairs having the same key into a single pair: `reduce((k,v1), (k,v2))` $\rightarrow$ `(k, v3)`, where `v3` = `v1` $\oplus$ `v2`;
 
 Consider that there are **mappers** and **reducers**, which takes as input the output of the mappers. 
@@ -345,9 +340,10 @@ It lacks built-in support for **stream processing**, where data is processed con
 
 Moreover, it incurs significant overhead in **reading** and writing **intermediate** data to **disk** after each `map` and `reduce` phase, which can impact performance for certain types of processing tasks.
 
-Apache Hadoop (*discussed in the final lectures by Professor Dazzi*) mainly took over Google's MapReduce.
+**Apache Hadoop** (*discussed in the final lectures by Professor Dazzi*) mainly took over Google's MapReduce.
 ### Map fusion
-An idea to improve a composition of sequences of MapReduce comes from a theoretical result named **map fusion**. It aims to **move** as **less data as possible** to give the final result.
+An idea to improve a composition of sequences of MapReduce comes from a theoretical result named **map fusion**. 
+It aims to **move** as **less data as possible** to give the final result.
 
 The map operation applies a given function to each element of a collection, producing a new collection with the transformed elements. When multiple map operations are performed one after another, it can lead to **unnecessary intermediate collections** and redundant iterations over the collection. Map fusion aims to eliminate these overheads by **fusing** or merging consecutive map operations into a single operation.
 
@@ -363,7 +359,7 @@ val numbers = List(1, 2, 3, 4, 5)
 val result = numbers.map(x => (x + 1) * 2)
 ```
 
-By fusing the map operations, the code avoids creating an intermediate collection after the first map operation, resulting in improved efficiencsequencesy.
+By fusing the map operations, the code avoids creating an intermediate collection after the first map operation.
 
 *Chap 5.5 of Danelutto Notes gets in depth in this topic.*
 ## Load balancing
@@ -373,14 +369,13 @@ Load balancing can optimize the response time and avoid unevenly overloading som
 
 Example showing the alternative scheduling of activities on 4 processing elements:
 ![[Pasted image 20230623183914.png | center]]
-
 ### Static load balancing
 In static load balancing, the scheduling **policy** is devised **before** the **computation starts** (can only rely on "compile time info").
 
 2 commonly used policies:
 - **Block distribution**: partition the activities into $n$ chunks, and assign each chunk to a processing unit:
 	- Performs better in case of **uniformly distributed** execution times;
-- **Cyclic distribution**: assign activities to processing units in a round robin fashion, i.e. activity $a_i$ is assigned to processing element $P_j$ such that $j = i\ \ \text{mod}\ n$:
+- **Cyclic distribution**: assign activities to processing units in a **round robin fashion**, i.e. activity $a_i$ is assigned to processing element $P_j$ such that $j = i\ \ \text{mod}\ n$:
 	- Performs better when "**hot spots**" are present.
 	  Hot spots are portions of concurrent activities with consecutive indexes that require execution times higher (or lower) than the average execution times.
 	  This is intuitive: having consecutive indexes we are assured that the modulo operation distributes evenly such activities to different processing elements.
@@ -405,7 +400,7 @@ A little con of the auto-scheduling is that the computing units have to stay idl
 A simple way to tackle this problem is to assign two activities at a time, such that when I finish computing the first one, I can send a request for a new one while I compute the second one. 
 However, assigning two concurrent activities to processing elements could impair the load balancing policy: a single processing element may receive two “long” concurrent activities while the other ones may get only “short” ones.
 
-*If it is not enough clear, Chap. 5.6.2 of Danelutto Notes goes into details with a lot of examples, as well as recording of the lecture.*
+*If it is not enough clear, Chap. 5.6.2 of Danelutto Notes goes into details with a lot of examples.*
 #### Variable Chunks
 Given an initial set of concurrent activities to be computed an initial large portion of the activities is assigned to processing elements statically with either a block or a cyclic policy. 
 The rest of the concurrent activities to be computed is divided in smaller and smaller chunks that are assigned to those processing elements that finish their previous assignments.
@@ -429,10 +424,9 @@ While this technique can be particularly effective, it is difficult to implement
 # Lecture 10 - 11
 ## Overheads
 **Anything added to the sequential code is overhead and must be reduced as much as possible.**
-
 In the following we show the **sources** of overheads.
 ### Communications
-3 types:
+There are three types of communication overhead:
 - **Inter-threads**: usually it is sufficient to send pointers. 
   But even using simple mailboxes is costly, as they are usually implemented with a shared data structure that needs to be thread-safe (and thus, adds overhead). 
   In order **to minimize the overhead**, we can:
@@ -455,7 +449,7 @@ In the following we show the **sources** of overheads.
 			- Once the 1st task has been computed AND the 2nd input arrived:
 				- $T_{\text{rec}}$ will **receive** a 3rd input on $B_2$;
 				- $T_{\text{proc}}$ will **compute** the 2nd input in $B_1$;
-				- $T_{\text{snd}}$ will **send** the 1st input in $B_0$;
+				- $T_{\text{snd}}$ will **send** the 1st output in $B_0$;
 		- At this point we have reached regime, and the 3 threads will keep going in a synchronized way, every time working on a different buffer in a cyclic way. 
 		  The final time will then be given by: $\text{max}(T_\text{receive}, T_\text{process}, T_\text{send})$. 
 		  If $T_\text{process}$ is greater than the other 2, we are talking about "**communication hiding**".
@@ -493,21 +487,20 @@ A **thread pool** maintains multiple threads waiting for tasks to be allocated -
 - Threads are **created once** and destroyed all after the parallel computation is terminated;
 - Workers obtain tasks to compute from some centralized or decentralized task repository, thus implementing any of the **load balancing** techniques previously seen;
 
-We must take care in implementing the **queue** managing the tasks: it must handle concurrency, for example using **mutexes** (to grant exclusive access) and **condition variables**(to implement the waiting).
+We must take care in implementing the **queue** managing the tasks: it must handle concurrency, for example using **mutexes** (to grant exclusive access) and **condition variables** (to implement the waiting).
 
 Details:
 ![[Pasted image 20230627185453.png | center]]
 
 The tasks in the queue are composed by **data** and **code**, and produce a **result**. 
 Thread pools may improve performances of plain sequential code where **function call** may be clearly identified as **independent** and, therefore, possibly concurrent.
-
 # Lecture 12: Implementing Frameworks
 *NOTE: professor only briefly stated what the 2 standards are without getting too much into details. To better understand it, I briefly summarized what can be found on the Danelutto Notes.*
 
 **Algorithmic Skeletons were defined as pre-defined patterns encapsulating the structure of a parallel computation** that are provided to the user as building blocks to be used to write applications. 
 Each skeleton corresponds to a single parallelism exploitation pattern. 
 As a result a skeleton based programming framework was defined as a programming framework providing programmers with algorithmic skeleton that may be used to model the parallel structure of the application at hand. 
-In the skeleton based programming framework the programmer has no other way (but instantiating skeletons) to structure his parallel computation. 
+In the skeleton based programming framework the programmer has no other way but instantiating skeletons to structure his parallel computation. 
 
 To **implement** parallel programming **frameworks**, there are 2 standards:
 - implementation templates
@@ -546,7 +539,8 @@ Template based implementation are more suited to support **static optimization t
 ## Refactoring
 **Refactoring means rewriting a program, obtaining a new one with same functional semantic but different non-functional semantic**, e.g. service time, latency, completion time, lower energy consumption, lower memory, better security...
 ## Patterns
-We can organize a parallel application as a composition of **patterns**. The patterns are given by the following **grammar**:
+We can organize a parallel application as a composition of **patterns**. 
+The patterns are given by the following **grammar**:
 $$Pat ::= Seq(f) \ | \ Pipe(Pat1, Pat2) \ | \ Comp(Pat1, Pat2) \ | \ Farm(Pat, nw) \ | \ Map(f) \ | \ Reduce(\oplus)$$
 *NOTE: comp is the sequential composition of 2 patterns.*
 ### Rewriting rules
@@ -572,7 +566,7 @@ Is a programming tool that allows to **define** and **apply rewriting rules** an
 ## OpenMP
 OpenMP is an API that supports **multi-platform shared-memory multiprocessing programming**.
 
-It is compiler-based, and it basically adds to sequential programming languages **annotations** by adding `#pragma omp ...`, thus requiring few lines of code to parallelize.
+It is compiler-based, and it basically adds to sequential programming languages **annotations** by adding "pragmas", as `#pragma omp ...`, thus requiring few lines of code to parallelize.
 
 The following are the **most important** pragmas, to append to `#pragma omp `:
 - `parallel`: execute statement in parallel with as many threads as the ones available. Optionally: `parallel num_threads(...)`;
@@ -675,7 +669,6 @@ Of course, since we are generally talking about parallel patterns nested one int
 This implements a **separation of concern** between pattern implementation and the autonomic stuff.
 
 *NOTE: Danelutto Notes went into far more technical details here, but professor just barely mentioned the concept of Behavioural skeleton, using it then to further go into examples.*
-
 #### Power consumption
 We're taking into accounts performance, but often power consumption is more important. 
 If we take into account both, we could implement a manager for each. 
@@ -688,7 +681,7 @@ A core can also generally be tweaked to go into two modes:
 - **sleep mode**: it is very fast to wake up, but still consuming a bit
 - **deep sleep mode**: consume close to 0 power, but takes more time to awake.
 
-Of course, reducing the frequency means increasing the total time: one must seek a **trade-off** between the two, often by taking the **maximum time** possible for the computation but spending less power to compute it.
+Of course, reducing the frequency means increasing the total time: one must seek a **trade-off** between the two, often by taking the **maximum (useful) time** possible for the computation but spending less power to compute it.
 # Lecture 20 - 23
 ## Stateful patterns
 *NOTE: Chap. 6.5 of Danelutto Notes goes into details.
@@ -733,7 +726,8 @@ Key concepts:
 - **Building the Computational Graph**: Once you have defined your custom nodes, you can build the computational graph by connecting the nodes together. This is done by specifying the input and output channels of nodes and establishing the message flow between them. FastFlow provides pattern classes (such as `ff_farm`, `ff_pipeline`, etc.) that help you organize and connect nodes based on common parallel patterns;
 - **Running the FastFlow Application**: To execute the parallel application, you create an instance of the pattern class that represents the overall structure of your parallel computation. You pass the necessary input channels, output channels, and nodes to the pattern class. Finally, you invoke the `run()` function on the pattern instance to start the execution of the parallel application.
 
-During the execution of the application, FastFlow manages the distribution of tasks among worker threads and handles the message passing between nodes. It provides automatic load balancing and efficient task scheduling to maximize parallelism and performance.
+During the execution of the application, FastFlow manages the distribution of tasks among worker threads and handles the message passing between nodes. 
+It provides automatic load balancing and efficient task scheduling to maximize parallelism and performance.
 
 *NOTE: After introducing these concepts, professor went into details on the patterns that FastFlow contains (e.g. pipeline, farm, map, for, reduce...) and a lot of advanced features available in FastFlow (like pinning processes to processors, optimizations, compilation flags...). I suggest going with: [Tutorial [FastFlow] (unipi.it)](http://calvados.di.unipi.it/dokuwiki/doku.php/ffnamespace:tutorial)*
 # Lecture 24 - 27: Message Passing Interface
@@ -775,8 +769,8 @@ Standard interface for **message passing**.
 - Other less interesting operations are available as well (check slides);
 
 # Lecture 28 - 30: Apache Hadoop 
-The Apache Hadoop software library is a framework that allows for the distributed processing of large data sets across clusters of computers using simple programming models. I
-t is designed to scale up from single servers to thousands of machines, each offering local computation and storage.
+The Apache Hadoop software library is a framework that allows for the distributed processing of large data sets across clusters of computers using simple programming models. 
+It is designed to scale up from single servers to thousands of machines, each offering local computation and storage.
 
 Hadoop is a scalable, reliable, and cost-effective solution for **storing** and **managing** large **datasets**, supporting Java and Scala.
 ### Hadoop Filesystem: HDFS
@@ -796,7 +790,7 @@ HDFS is best used with Hadoop, since it provides **data awareness** to the compu
 In order to **READ/WRITE** a file, clients only communicate with NNs in order to find/decide the data blocks and then **directly read/write blocks** from DNs. 
 This approach prevents NNs from being bottlenecks.
 
-For the reading part, when given multiple replicas of the same, it considers 2 factors:
+For the reading part, when given multiple replicas of the same file, it considers 2 factors:
 - **Proximity** to the reader;
 - **Rack awareness**: choose replicas on the same rack or nearby racks, reducing network traffic;
 
@@ -823,12 +817,13 @@ KNN is a simple machine learning algorithm that **classifies a new data point** 
 - For each element, find its k nearest point and their labels, and assign the label of the majority to the element. 
 # Lecture 31 - 35
 ## Apache Spark
-It is a unified analytics engine for **large-scale data processing**. It **extends Hadoop** approach: it does not only support MapReduce, but also SQL queries, data streaming data, machine learning and graph algorithms.
+It is a unified analytics engine for **large-scale data processing**. 
+It **extends Hadoop** approach: it does not only support MapReduce, but also SQL queries, data streaming, machine learning and graph algorithms.
 
-It has a main component:
-- **Driver program**: it runs the `main()` function and creates the `SparkContext`, which is the entry point to any Spark functionality. The driver program is responsible for **dividing** the work into **tasks** and scheduling them across the cluster.
+The main component is the **driver program**: it runs the `main()` function and creates the `SparkContext`, which is the entry point to any Spark functionality. The driver program is responsible for **dividing** the work into **tasks** and scheduling them across the cluster.
 
-It supports the concept of **shared variables**, variables shared across tasks. They can be of 2 types:
+It supports the concept of **shared variables**, variables shared across tasks. 
+They can be of 2 types:
 - **Broadcast**: **read-only** variables that are cached on each machine rather than providing a copy of it with tasks. Broadcast variables allow programmers to keep a read-only variable cached on each machine, which helps to reduce communication cost. They can be used, for example, to give a copy of a large input dataset in an efficient manner to every node;
 - **Accumulators**: **write-only** variables that can only be increased by the tasks. They can be used, for example, for *reduce* operations, so that the driver can then retrieve the final result.
 ### RDD
@@ -845,13 +840,14 @@ Note that transformations are executed in a **lazy** way (transformations are on
 ### GraphX
 GraphX is a **distributed graph processing framework** built on top of Spark. It supports **basic graph operations** (e.g. vertices/edges counting, reversing, subgraphing...) and also has **builted-in algorithms** (e.g. PageRank, Connected Components, Shortest Path...).
 
-It is implemented using the concept of **Think Like A Vertex (TLAV)** and it leverages 2 models: **Bulk Synchronous Parallel (BSP)** model and **Actor model**.
+It is implemented using the concept of **Think Like A Vertex (TLAV)** and it leverages 2 models: **Bulk Synchronous Parallel (BSP)** model and **Actor Model**.
 #### Think Like A Vertex
 GraphX uses the concept of **TLAV (Think Like A Vertex)** to represent a graph and enabling efficient distributed graph processing.
 
 The vertex is the **primary unit of computation**, maintaining a state (e.g. label, attributes...) and **sending messages** to its neighbours, which can in turn update their state based on those messages.
 #### Bulk Synchronous Parallel (BSP) model
-It is a **parallel computing model** that divides computation into **supersteps**, where each superstep consists of a **computation phase**, a **communication phase** and a **synchronization phase**. No 2 supersteps can overlap thanks to the synchronization phase.
+It is a **parallel computing model** that divides computation into **supersteps**, where each superstep consists of a **computation phase**, a **communication phase** and a **synchronization phase**. 
+No 2 supersteps can overlap thanks to the synchronization phase.
 ![[Pasted image 20230717153034.png|center|400]]
 The TLAV concept is implemented here: the compute units are the vertices, that can communicate and exchange messages with each other and synchronize at the end of every superstep.
 #### Actor model
@@ -864,7 +860,7 @@ Because of the indeterminism, it is important that the implemented actions are *
 Note that due to the said features, the Actor model supports **fault-tolerance** (actors can be restarted/moved to another machine) and **scalability** (new actors can be created).
 ## CAP Theorem
 Fundamental concept in distributed systems that states that it is **impossible** to **simultaneously guarantee** all three of the following properties:
-- **Consistency**: always read the up-to-date data;
+- **Consistency**: reads are always up-to-date data;
 - **Availability**: always get a response (no guarantees it is the most recent write);
 - **Partition Tolerance**: system continues to operate despite network partitions (communication failures) that may occur.
 
@@ -887,4 +883,5 @@ Here's a high-level overview of how Akka works:
 - **Concurrency and Scalability**: Akka is designed to handle high levels of concurrency and scale efficiently. It achieves this through the use of lightweight actors, which can be scheduled and executed concurrently on a small number of threads. This approach minimizes the overhead of thread creation and context switching, allowing for better utilization of system resources.
 - **Clustering and Distribution**: Akka provides tools for building distributed systems. It includes features like clustering, where multiple instances of an application can form a cluster and communicate with each other transparently. Akka also supports remote actors, allowing actors to be located on different machines and exchange messages over the network.
 
-Overall, Akka simplifies the development of highly concurrent and distributed applications by providing a powerful actor-based model, fault-tolerance mechanisms, and tools for scalability and distribution. It enables developers to build resilient and reactive systems that can handle large workloads and adapt to changing conditions.
+Overall, Akka simplifies the development of highly concurrent and distributed applications by providing a powerful actor-based model, fault-tolerance mechanisms, and tools for scalability and distribution. 
+It enables developers to build resilient and reactive systems that can handle large workloads and adapt to changing conditions.
